@@ -6,9 +6,6 @@
 
 (function (window, tinycolor) {
 
-
-  /** Utilities */
-
   // Simple range mapping function
   // For example, mapRange(5, 0, 10, 0, 100) = 50
   function mapRange(value, fromLower, fromUpper, toLower, toUpper) {
@@ -407,7 +404,7 @@
     },
 
     setMode: function (mode) {
-      modeExists = false;
+      var modeExists = false;
       for (var possibleMode in modes) {
         if (modes[possibleMode] == mode) {
           modeExists = true;
@@ -429,5 +426,3 @@
   window.ColorWheel = ColorWheel;
 
 })(this, tinycolor);
-
-var colorWheel = new ColorWheel(5, '.colorwheel');
