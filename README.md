@@ -4,4 +4,8 @@
 
 ## Usage
 
-  var colorWheel = new ColorWheel(5, '.colorwheel');
+    var colorWheel = new ColorWheel(5, '.colorwheel');
+
+## Demo
+
+http://codepen.io/benknight/pen/nADpy
