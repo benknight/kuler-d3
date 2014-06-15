@@ -1,0 +1,19 @@
+TODO
+
+Do next:
+[x] v slider controls
+[x] Mode toggle
+[x] Mark root
+[x] Show hex/rgb data for swatches
+[x] Make this a module with an API
+[ ] Fix analagous mode bugs
+[x] Make it possible to have multiple UIs on one page
+
+Nice to have:
+[ ] Marker tails? Meh...
+[ ] Compound mode
+[ ] Make it possible to set the root
+
+Crazy ideas:
+[ ] Support other color wheels?
+[ ] Hook up to Hue lights!
