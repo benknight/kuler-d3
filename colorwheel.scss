@@ -11,11 +11,13 @@ $margin: 20px;
 $color-wheel-url: 'https://raw.githubusercontent.com/'
                 + 'benknight/kuler-colorwheel-with-d3/master/colorwheel.png';
 
+body {
+  background: #222;
+}
 
 .colorwheel {
   position: relative;
   overflow: hidden; // to contain margins. bad idea? tonight at 11.
-  background: #222;
 }
 
 .wheel {
@@ -52,8 +54,8 @@ $color-wheel-url: 'https://raw.githubusercontent.com/'
 .theme {
   display: flex;
   text-align: center;
-  max-width: 525px;
-  min-width: 440px;
+  max-width: 450px;
+  min-width: 350px;
   margin: 10px auto 0;
 
   .swatch {
