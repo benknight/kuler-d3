@@ -73,12 +73,46 @@
       TRIAD: 'Triad',
   };
 
+  // Throw an error if someone gives us a bad mode.
+  function checkIfModeExists(mode) {
+    var modeExists = false;
+    for (var possibleMode in modes) {
+      if (modes[possibleMode] == mode) {
+        modeExists = true;
+        break;
+      }
+    }
+    if (! modeExists) {
+      throw Error('Invalid mode specified: ' + mode);
+    }
+    return true;
+  }
+
 
   /** Constructor */
 
   var ColorWheel = function ColorWheel (data, container, options) {
     // Initialize the mode and create a container for all of the UI
     var self = this;
+
+    // Set configs
+    self.options = {
+      width: 350,
+      markerWidth: 30,
+      margin: 20,
+      defaultSlice: 20,
+      initRoot: 'red',
+      initMode: modes.ANALOGOUS,
+    };
+
+    if (typeof options === 'object') {
+      for (option in options) {
+        if (option == 'initMode') {
+          checkIfModeExists(options[option]);
+        }
+        self.options[option] = options[option];
+      }
+    }
 
     if (typeof container === 'undefined') {
       container = document.body;
@@ -96,27 +130,13 @@
       var newData = [];
       var numColors = (typeof data === 'number') ? data : 5;
       for (var i = 0; i < data; i++) {
-        newData.push(tinycolor().toHsv());
+        newData.push(tinycolor(self.options.initRoot).toHsv());
       }
       data = newData;
-      self.currentMode = modes.ANALOGOUS;
+      self.currentMode = self.options.initMode;
     }
 
     self.container = d3.select(container);
-
-    // Set configs
-    self.options = {
-      width: 400,
-      markerWidth: 30,
-      margin: 20,
-      defaultSlice: 45,
-    };
-
-    if (typeof options === 'object') {
-      for (option in options) {
-        self.options[option] = options[option];
-      }
-    }
 
     var r = self.options.width / 2;
 
@@ -411,16 +431,7 @@
     },
 
     setMode: function (mode) {
-      var modeExists = false;
-      for (var possibleMode in modes) {
-        if (modes[possibleMode] == mode) {
-          modeExists = true;
-          break;
-        }
-      }
-      if (! modeExists) {
-        throw Error('Invalid mode specified: ' + mode);
-      }
+      checkIfModeExists(mode);
       this.currentMode = mode;
       this.container.select('select').property('value', mode);
       this._init();
