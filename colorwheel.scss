@@ -1,12 +1,16 @@
+/**
+ * Default color wheel theme
+ * Modify at your leasure!
+ */
+
+// The amount of space to leave on each side of the color wheel to allow
+// room for the markers when they're on the edge of the wheel.
 $margin: 20px;
-$color-wheel-url: 'http://cl.ly/image/1T1K0D2h1G3P/color_wheel_730.png';
 
+// URL to the color wheel asset.
+$color-wheel-url: 'https://raw.githubusercontent.com/'
+                + 'benknight/kuler-colorwheel-with-d3/master/colorwheel.png';
 
-body {
-  margin: 5px 40px;
-  font: 14px/1.2 Helvetica Neue, Arial, sans-serif;
-  background: #222;
-}
 
 .colorwheel {
   position: relative;
@@ -30,7 +34,7 @@ body {
   background-repeat: no-repeat;
 
 
-  circle {
+  .marker {
     cursor: move;
     stroke: white;
     stroke-width: 3px;
