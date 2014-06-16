@@ -84,15 +84,22 @@
       container = document.body;
     }
 
-    if (typeof data === 'number') {
+    if (typeof data === 'object') {
+      // Parse data as tinycolor and convert to HSV
       var newData = [];
-      self.currentMode = modes.ANALOGOUS;
+      for (var datum in data) {
+        newData.push(tinycolor(data[datum]).toHsv());
+      }
+      data = newData;
+      self.currentMode = modes.CUSTOM;
+    } else {
+      var newData = [];
+      var numColors = (typeof data === 'number') ? data : 5;
       for (var i = 0; i < data; i++) {
         newData.push(tinycolor().toHsv());
       }
       data = newData;
-    } else {
-      self.currentMode = modes.CUSTOM;
+      self.currentMode = modes.ANALOGOUS;
     }
 
     self.container = d3.select(container);
