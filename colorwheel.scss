@@ -14,13 +14,15 @@ $color-wheel-url: 'https://raw.githubusercontent.com/'
 
 .colorwheel {
   position: relative;
+  overflow: hidden; // to contain margins. bad idea? tonight at 11.
+  background: #222;
 }
 
 .wheel {
   position: relative;
   z-index: 1;
   display: block;
-  margin: 0 auto;
+  margin: 20px auto 0;
   background-image:
     url($color-wheel-url),
     radial-gradient(

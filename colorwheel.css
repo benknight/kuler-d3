@@ -4,13 +4,15 @@
  */
 .colorwheel {
   position: relative;
+  overflow: hidden;
+  background: #222;
 }
 
 .wheel {
   position: relative;
   z-index: 1;
   display: block;
-  margin: 0 auto;
+  margin: 20px auto 0;
   background-image: url("https://raw.githubusercontent.com/benknight/kuler-colorwheel-with-d3/master/colorwheel.png"), radial-gradient(closest-side, rgba(0, 0, 0, 0.9) 0px, rgba(0, 0, 0, 0.9) calc(100% - 20px), transparent calc(100% - 20px));
   background-position: center, 2px 5px;
   background-size: calc(100% - 40px), auto;
