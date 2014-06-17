@@ -425,16 +425,26 @@
   };
 
   ColorWheel.prototype = {
-    getColorsAsHEX: function () {
+    _getColorsAs: function (toFunk) {
       return this.container.selectAll('.marker').data().map(function (d) {
-        return tinycolor({h: d.h, s: d.s, v: d.v}).toHexString();
+        return tinycolor({h: d.h, s: d.s, v: d.v})[toFunk]();
       });
     },
 
+    getColorsAsHEX: function () {
+      return this._getColorsAs('toHexString');
+    },
+
     getColorsAsRGB: function () {
-      return this.container.selectAll('.marker').data().map(function (d) {
-        return tinycolor({h: d.h, s: d.s, v: d.v}).toRgbString();
-      });
+      return this._getColorsAs('toRgbString');
+    },
+
+    getColorsAsHSL: function () {
+      return this._getColorsAs('toHslString');
+    },
+
+    getColorsAsHSV: function () {
+      return this._getColorsAs('toHsvString');
     },
 
     setMode: function (mode) {
