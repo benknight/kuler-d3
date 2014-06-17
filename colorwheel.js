@@ -103,6 +103,9 @@
       defaultSlice: 20,
       initRoot: 'red',
       initMode: modes.ANALOGOUS,
+      colorString: function (color) {
+        return color.toHexString();
+      }
     };
 
     if (typeof options === 'object') {
@@ -316,7 +319,7 @@
 
       self.container.selectAll('.value').each(function (d) {
         var c = tinycolor({h: d.h, s: d.s, v: d.v});
-        this.value = c.toHexString();
+        this.value = self.options.colorString(c);
       });
     };
 
