@@ -29,4 +29,4 @@ var colorWheel = new ColorWheel(data, '.colorwheel');
 
 ## Demo
 
-http://codepen.io/benknight/pen/nADpy
+http://codepen.io/benknight/full/nADpy/
