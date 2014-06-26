@@ -7,12 +7,12 @@
 (function (root, factory) {
   // AMD/requirejs: Define the module
   if (typeof define === 'function' && define.amd) {
-      define(['tinycolor'], factory);
+      define(['tinycolor', 'd3'], factory);
   } else {
     // Expose to browser window
-    root.ColorWheel = factory(root.tinycolor);
+    root.ColorWheel = factory(root.tinycolor, root.d3);
   }
-}(this, function (tinycolor) {
+}(this, function (tinycolor, d3) {
 
   // Simple range mapping function
   // For example, mapRange(5, 0, 10, 0, 100) = 50
