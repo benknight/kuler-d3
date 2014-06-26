@@ -8,6 +8,7 @@ Do next:
 [x] Make this a module with an API
 [ ] Fix analagous mode bugs
 [x] Make it possible to have multiple UIs on one page
+[x] Make this a proper AMD module
 
 Nice to have:
 [ ] Marker tails? Meh...

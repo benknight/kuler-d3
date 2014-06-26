@@ -4,7 +4,15 @@
 // @requires IE9+, TinyColor, D3.js
 // MIT License
 
-(function (window, tinycolor) {
+(function (root, factory) {
+  // AMD/requirejs: Define the module
+  if (typeof define === 'function' && define.amd) {
+      define(['tinycolor'], factory);
+  } else {
+    // Expose to browser window
+    root.ColorWheel = factory(root.tinycolor);
+  }
+}(this, function (tinycolor) {
 
   // Simple range mapping function
   // For example, mapRange(5, 0, 10, 0, 100) = 50
@@ -457,7 +465,5 @@
 
   ColorWheel.modes = modes;
 
-  // Expose to browser window
-  window.ColorWheel = ColorWheel;
-
-})(this, tinycolor);
+  return ColorWheel;
+}));
