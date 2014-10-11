@@ -13,6 +13,8 @@ $color-wheel-url: 'https://raw.githubusercontent.com/'
 
 body {
   background: #222;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .colorwheel {
@@ -49,6 +51,13 @@ body {
       stroke-width: 4px;
     }
   }
+
+  .marker-trail {
+    stroke: white;
+    stroke-opacity: 0.75;
+    stroke-width: 3px;
+    stroke-dasharray: 10, 6;
+  }
 }
 
 .theme {
@@ -81,14 +90,17 @@ body {
       position: relative;
       display: block;
       width: 100%;
-      margin: 10px 0 20px;
+      margin: 0 0 15px;
+      -webkit-appearance: none;
+      outline: none;
+      background: transparent;
 
       &:before {
         content: attr(value) '%';
         display: block;
         position: absolute;
         z-index: -1;
-        top: 16px;
+        top: 30px;
         width: 100%;
         font-size: 10px;
         text-align: center;
@@ -116,7 +128,7 @@ body {
   right: 15px;
   height: 2em;
   border: none;
-  background: #222;
+  background: #000;
   color: rgba(255, 255, 255, 0.75);
   font-size: 18px;
   box-shadow: 0 1px 1px black;
@@ -125,4 +137,69 @@ body {
   &:hover {
     color: rgba(255, 255, 255, 0.9);
   }
+}
+
+
+// Slider styles
+
+::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  height: 2px;
+  border: none;
+  margin: 1em 0;
+  background: #fff;
+  color: #fff;
+}
+
+::-moz-range-track {
+  height: 2px;
+  border: none;
+  margin: 1em 0;
+  background: #fff;
+  color: #fff;
+}
+
+::-ms-track {
+  height: 2px;
+  border: none;
+  margin: 1em 0;
+  background: #fff;
+  color: #fff;
+}
+
+::-ms-fill-lower,
+::-ms-fill-upper,
+::-ms-ticks-before,
+::-ms-ticks-after,
+::-ms-tooltip {
+  display: none;
+}
+
+::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -7px;
+  background: black;
+  border: 2px solid #fff;
+  height: 15px;
+  width: 15px;
+  border-radius: 99px;
+  cursor: ew-resize;
+}
+
+::-moz-range-thumb {
+  background: black;
+  border: 2px solid #fff;
+  height: 15px;
+  width: 15px;
+  border-radius: 99px;
+  cursor: ew-resize;
+}
+
+::-ms-thumb {
+  background: black;
+  border: 2px solid #fff;
+  height: 15px;
+  width: 15px;
+  border-radius: 99px;
+  cursor: ew-resize;
 }

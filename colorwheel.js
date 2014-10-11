@@ -1,6 +1,4 @@
-// ColorWheel
-// @version 0.1
-// @author Benjamin Knight
+// ColorWheel module by Benjamin Knight
 // MIT License
 
 (function (root, factory) {
@@ -72,12 +70,12 @@
    */
 
   var modes = {
-      CUSTOM: 'Custom',
       ANALOGOUS: 'Analogous',
+      TRIAD: 'Triad',
       COMPLEMENTARY: 'Complementary',
       MONOCHROMATIC: 'Monochromatic',
       SHADES: 'Shades',
-      TRIAD: 'Triad',
+      CUSTOM: 'Custom'
   };
 
   // Throw an error if someone gives us a bad mode.
@@ -344,6 +342,17 @@
           return hexFromHS(d.h, d.s);
         }
       });
+
+      self.container.selectAll('.marker-trail').attr({
+        'x2': function (d) {
+          var p = getSVGPositionFromHS(d.h, d.s);
+          return p.x;
+        },
+        'y2': function (d) {
+          var p = getSVGPositionFromHS(d.h, d.s);
+          return p.y;
+        }
+      });
     };
 
     var updateMarkersAndTheme = function () {
@@ -357,16 +366,31 @@
       .attr('width', self.options.width + 2 * self.options.margin)
       .attr('height', self.options.width + 2 * self.options.margin);
 
+    var markerTrailsContainer = wheel.append('g')
+      .attr('class', 'marker-trails')
+      .attr('width', self.options.width)
+      .attr('height', self.options.width)
+      .attr('transform', 'translate(' + self.options.margin + ', ' + self.options.margin + ')');
+
+    var markerTrails = markerTrailsContainer.selectAll('.marker-trail').data(data);
+
+    markerTrails.enter().append('line')
+      .attr('class', 'marker-trail')
+      .attr('x1', self.options.width / 2)
+      .attr('y1', self.options.width / 2);
+
     var markersContainer = wheel.append('g')
       .attr('class', 'markers')
       .attr('width', self.options.width)
       .attr('height', self.options.width)
       .attr('transform', 'translate(' + self.options.margin + ', ' + self.options.margin + ')');
 
-    var markers = markersContainer.selectAll('.marker').data(data)
+    var markers = markersContainer.selectAll('.marker').data(data);
+
     markers.enter().append('circle')
       .attr('class', 'marker')
-      .attr('r', self.options.markerWidth / 2)
+      .attr('r', self.options.markerWidth / 2);
+
     markers.exit().remove();
 
     markers.call(
