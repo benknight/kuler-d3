@@ -1,5 +1,6 @@
-// ColorWheel module by Benjamin Knight
-// MIT License
+// Kuler Color Wheel with D3 v1.0
+// http://github.com/benknight/kuler-colorwheel-with-d3
+// Benjamin Knight / MIT License
 
 (function (root, factory) {
   // AMD/requirejs: Define the module
@@ -32,13 +33,13 @@
 
   function scientificToArtisticSmooth(hue) {
     return (
-        hue < 35  ? hue * (60 / 35):
-        hue < 60  ? mapRange(hue, 35,  60,  60,  122):
-        hue < 120 ? mapRange(hue, 60,  120, 122, 165):
-        hue < 180 ? mapRange(hue, 120, 180, 165, 218):
-        hue < 240 ? mapRange(hue, 180, 240, 218, 275):
-        hue < 300 ? mapRange(hue, 240, 300, 275, 330):
-                    mapRange(hue, 300, 360, 330, 360));
+      hue < 35  ? hue * (60 / 35):
+      hue < 60  ? mapRange(hue, 35,  60,  60,  122):
+      hue < 120 ? mapRange(hue, 60,  120, 122, 165):
+      hue < 180 ? mapRange(hue, 120, 180, 165, 218):
+      hue < 240 ? mapRange(hue, 180, 240, 218, 275):
+      hue < 300 ? mapRange(hue, 240, 300, 275, 330):
+                  mapRange(hue, 300, 360, 330, 360));
   }
 
   // Get a hex string from hue and sat components, with 100% brightness.
