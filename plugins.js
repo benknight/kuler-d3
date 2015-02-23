@@ -42,7 +42,7 @@ ColorWheel.extend(function (wheel) {
     .attr('class', 'mode-toggle')
     .on('change', function () {
       wheel.currentMode = this.value;
-      init();
+      wheel._init();
     });
 
   for (var mode in ColorWheel.modes) {
