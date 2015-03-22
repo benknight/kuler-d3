@@ -215,7 +215,7 @@ function stepFn(base) {
     );
 
     this.dispatch.on('update.markers', function () {
-      this.container.selectAll('.marker').attr({
+      self.container.selectAll('.marker').attr({
         cx: function (d) {
           var p = self.getSVGPositionFromHS(d.h, d.s);
           return p.x;
@@ -229,7 +229,7 @@ function stepFn(base) {
         }
       });
 
-      this.container.selectAll('.marker-trail').attr({
+      self.container.selectAll('.marker-trail').attr({
         'x2': function (d) {
           var p = self.getSVGPositionFromHS(d.h, d.s);
           return p.x;
@@ -239,7 +239,7 @@ function stepFn(base) {
           return p.y;
         }
       });
-    }.bind(this));
+    });
 
     // phew
     this.init();
