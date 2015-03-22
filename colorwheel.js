@@ -492,6 +492,8 @@ ColorWheel.extend(function (colorWheel, data) {
       this.value = colorWheel.options.colorString(c);
     });
   });
+
+  colorWheel.dispatch.update();
 });
 
 // Add mode toggle UI
