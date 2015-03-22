@@ -1,0 +1,31 @@
+{
+  "name": "kuler-colorwheel-with-d3",
+  "version": "1.1",
+  "homepage": "https://github.com/benknight/kuler-colorwheel-with-d3",
+  "authors": [
+    "Benjamin Knight <ben@benknight.me>"
+  ],
+  "description": "Reconstruction of the color wheel UI found on http://kuler.adobe.com, built with D3.",
+  "main": "colorwheel.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "d3",
+    "color"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "tinycolor": "~1.1.2",
+    "d3": "~3.5.5"
+  }
+}
