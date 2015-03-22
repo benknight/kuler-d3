@@ -2,58 +2,6 @@
 // http://github.com/benknight/kuler-colorwheel-with-d3
 // Benjamin Knight / MIT License
 
-// Simple range mapping function
-// For example, mapRange(5, 0, 10, 0, 100) = 50
-function mapRange(value, fromLower, fromUpper, toLower, toUpper) {
-  return (toLower + (value - fromLower) * ((toUpper - toLower) / (fromUpper - fromLower)));
-}
-
-// These two functions are ripped straight from Kuler source.
-// They convert between scientific hue to the color wheel's "artistic" hue.
-function artisticToScientificSmooth(hue) {
-  return (
-    hue < 60  ? hue * (35 / 60):
-    hue < 122 ? mapRange(hue, 60,  122, 35,  60):
-    hue < 165 ? mapRange(hue, 122, 165, 60,  120):
-    hue < 218 ? mapRange(hue, 165, 218, 120, 180):
-    hue < 275 ? mapRange(hue, 218, 275, 180, 240):
-    hue < 330 ? mapRange(hue, 275, 330, 240, 300):
-                mapRange(hue, 330, 360, 300, 360));
-}
-
-function scientificToArtisticSmooth(hue) {
-  return (
-    hue < 35  ? hue * (60 / 35):
-    hue < 60  ? mapRange(hue, 35,  60,  60,  122):
-    hue < 120 ? mapRange(hue, 60,  120, 122, 165):
-    hue < 180 ? mapRange(hue, 120, 180, 165, 218):
-    hue < 240 ? mapRange(hue, 180, 240, 218, 275):
-    hue < 300 ? mapRange(hue, 240, 300, 275, 330):
-                mapRange(hue, 300, 360, 330, 360));
-}
-
-// Get a hex string from hue and sat components, with 100% brightness.
-function hexFromHS(h, s) {
-  return tinycolor({h: h, s: s, v: 1}).toHexString();
-}
-
-// Used to determine the distance from the root marker.
-// (The first DOM node with marker class)
-// Domain: [0, 1,  2, 3,  4, ... ]
-// Range:  [0, 1, -1, 2, -2, ... ]
-function markerDistance(i) {
-  return Math.ceil(i / 2) * (2 * (i % 2) - 1);
-}
-
-// Returns a step function with the given base.
-// e.g. with base = 3, returns a function with this domain/range:
-// Domain: [0, 1, 2, 3, 4, 5, ...]
-// Range:  [0, 0, 0, 1, 1, 1, ...]
-function stepFn(base) {
-  return function(x) { return Math.floor(x / base); }
-}
-
-
 (function (root, factory) {
   // AMD/requirejs: Define the module
   if (typeof define === 'function' && define.amd) {
@@ -63,6 +11,58 @@ function stepFn(base) {
     root.ColorWheel = factory(root.tinycolor, root.d3);
   }
 }(this, function (tinycolor, d3) {
+
+  // Simple range mapping function
+  // For example, mapRange(5, 0, 10, 0, 100) = 50
+  function mapRange(value, fromLower, fromUpper, toLower, toUpper) {
+    return (toLower + (value - fromLower) * ((toUpper - toLower) / (fromUpper - fromLower)));
+  }
+
+  // These two functions are ripped straight from Kuler source.
+  // They convert between scientific hue to the color wheel's "artistic" hue.
+  function artisticToScientificSmooth(hue) {
+    return (
+      hue < 60  ? hue * (35 / 60):
+      hue < 122 ? mapRange(hue, 60,  122, 35,  60):
+      hue < 165 ? mapRange(hue, 122, 165, 60,  120):
+      hue < 218 ? mapRange(hue, 165, 218, 120, 180):
+      hue < 275 ? mapRange(hue, 218, 275, 180, 240):
+      hue < 330 ? mapRange(hue, 275, 330, 240, 300):
+                  mapRange(hue, 330, 360, 300, 360));
+  }
+
+  function scientificToArtisticSmooth(hue) {
+    return (
+      hue < 35  ? hue * (60 / 35):
+      hue < 60  ? mapRange(hue, 35,  60,  60,  122):
+      hue < 120 ? mapRange(hue, 60,  120, 122, 165):
+      hue < 180 ? mapRange(hue, 120, 180, 165, 218):
+      hue < 240 ? mapRange(hue, 180, 240, 218, 275):
+      hue < 300 ? mapRange(hue, 240, 300, 275, 330):
+                  mapRange(hue, 300, 360, 330, 360));
+  }
+
+  // Get a hex string from hue and sat components, with 100% brightness.
+  function hexFromHS(h, s) {
+    return tinycolor({h: h, s: s, v: 1}).toHexString();
+  }
+
+  // Used to determine the distance from the root marker.
+  // (The first DOM node with marker class)
+  // Domain: [0, 1,  2, 3,  4, ... ]
+  // Range:  [0, 1, -1, 2, -2, ... ]
+  function markerDistance(i) {
+    return Math.ceil(i / 2) * (2 * (i % 2) - 1);
+  }
+
+  // Returns a step function with the given base.
+  // e.g. with base = 3, returns a function with this domain/range:
+  // Domain: [0, 1, 2, 3, 4, 5, ...]
+  // Range:  [0, 0, 0, 1, 1, 1, ...]
+  function stepFn(base) {
+    return function(x) { return Math.floor(x / base); }
+  }
+
 
   /**
    * ColorWheel Modes
@@ -421,94 +421,93 @@ function stepFn(base) {
     this.init();
   };
 
-  return ColorWheel;
-}));
+  /** Plugins */
 
+  // Add theme UI
+  ColorWheel.extend(function (colorWheel, data) {
+    var theme = colorWheel.container.append('div').attr('class', 'theme');
+    var swatches = theme.selectAll('div').data(data);
 
-/** Plugins */
+    swatches.enter().append('div')
+      .attr('class', 'swatch')
+      .append('div')
+        .attr('class', 'color');
+    swatches.exit().remove();
 
-// Add theme UI
-ColorWheel.extend(function (colorWheel, data) {
-  var theme = colorWheel.container.append('div').attr('class', 'theme');
-  var swatches = theme.selectAll('div').data(data);
-
-  swatches.enter().append('div')
-    .attr('class', 'swatch')
-    .append('div')
-      .attr('class', 'color');
-  swatches.exit().remove();
-
-  // Add sliders
-  var sliders = theme.selectAll('.swatch')
-    .append('input')
-    .attr('type', 'range')
-    .attr('class', 'slider')
-    .on('input', function (d) {
-      d.v = parseInt(this.value) / 100;
-      colorWheel.dispatch.update();
-    });
-
-  // Add color codes
-  var colorValues = theme.selectAll('.swatch')
-    .append('input')
-      .attr('type', 'text')
-      .attr('class', 'value')
-      .on('focus', function () {
-        // Like jQuery's .one(), attach a listener that only executes once.
-        // This way the user can use the cursor normally after the initial selection.
-        d3.select(this).on('mouseup', function () {
-          d3.event.preventDefault();
-          // Detach the listener
-          d3.select(this).on('mouseup', null);
-        })
-        this.select();
+    // Add sliders
+    var sliders = theme.selectAll('.swatch')
+      .append('input')
+      .attr('type', 'range')
+      .attr('class', 'slider')
+      .on('input', function (d) {
+        d.v = parseInt(this.value) / 100;
+        colorWheel.dispatch.update();
       });
 
-  colorWheel.dispatch.on('update.theme', function () {
-    colorWheel.container.selectAll('.swatch').each(function (d, i) {
-      switch (colorWheel.currentMode) {
-        case ColorWheel.modes.TRIAD:
-          this.style.order = this.style.webkitOrder = i % 3;
-          break;
-        default:
-          this.style.order = this.style.webkitOrder = markerDistance(i);
-          break;
-      }
+    // Add color codes
+    var colorValues = theme.selectAll('.swatch')
+      .append('input')
+        .attr('type', 'text')
+        .attr('class', 'value')
+        .on('focus', function () {
+          // Like jQuery's .one(), attach a listener that only executes once.
+          // This way the user can use the cursor normally after the initial selection.
+          d3.select(this).on('mouseup', function () {
+            d3.event.preventDefault();
+            // Detach the listener
+            d3.select(this).on('mouseup', null);
+          })
+          this.select();
+        });
+
+    colorWheel.dispatch.on('update.theme', function () {
+      colorWheel.container.selectAll('.swatch').each(function (d, i) {
+        switch (colorWheel.currentMode) {
+          case ColorWheel.modes.TRIAD:
+            this.style.order = this.style.webkitOrder = i % 3;
+            break;
+          default:
+            this.style.order = this.style.webkitOrder = markerDistance(i);
+            break;
+        }
+      });
+
+      colorWheel.container.selectAll('.color').each(function (d) {
+        var c = tinycolor({h: d.h, s: d.s, v: d.v});
+        this.style.backgroundColor = c.toHexString();
+      });
+
+      colorWheel.container.selectAll('.slider').each(function (d) {
+        var val = parseInt(d.v * 100);
+        this.value = val;
+        d3.select(this).attr('value', val);
+      });
+
+      colorWheel.container.selectAll('.value').each(function (d) {
+        var c = tinycolor({h: d.h, s: d.s, v: d.v});
+        this.value = colorWheel.options.colorString(c);
+      });
     });
 
-    colorWheel.container.selectAll('.color').each(function (d) {
-      var c = tinycolor({h: d.h, s: d.s, v: d.v});
-      this.style.backgroundColor = c.toHexString();
-    });
-
-    colorWheel.container.selectAll('.slider').each(function (d) {
-      var val = parseInt(d.v * 100);
-      this.value = val;
-      d3.select(this).attr('value', val);
-    });
-
-    colorWheel.container.selectAll('.value').each(function (d) {
-      var c = tinycolor({h: d.h, s: d.s, v: d.v});
-      this.value = colorWheel.options.colorString(c);
-    });
+    colorWheel.dispatch.update();
   });
 
-  colorWheel.dispatch.update();
-});
-
-// Add mode toggle UI
-ColorWheel.extend(function (colorWheel) {
-  var modeToggle = colorWheel.container.append('select')
-    .attr('class', 'mode-toggle')
-    .on('change', function () {
-      colorWheel.currentMode = this.value;
-      colorWheel.init();
-    });
-
-  for (var mode in ColorWheel.modes) {
-    modeToggle.append('option').text(ColorWheel.modes[mode])
-      .attr('selected', function () {
-        return ColorWheel.modes[mode] == colorWheel.currentMode ? 'selected' : null;
+  // Add mode toggle UI
+  ColorWheel.extend(function (colorWheel) {
+    var modeToggle = colorWheel.container.append('select')
+      .attr('class', 'mode-toggle')
+      .on('change', function () {
+        colorWheel.currentMode = this.value;
+        colorWheel.init();
       });
-  }
-});
+
+    for (var mode in ColorWheel.modes) {
+      modeToggle.append('option').text(ColorWheel.modes[mode])
+        .attr('selected', function () {
+          return ColorWheel.modes[mode] == colorWheel.currentMode ? 'selected' : null;
+        });
+    }
+  });
+
+  return ColorWheel;
+}));
