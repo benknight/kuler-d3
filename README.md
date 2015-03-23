@@ -30,3 +30,7 @@ var colorWheel = new ColorWheel(data, '.colorwheel');
 ## Demo
 
 http://codepen.io/benknight/full/nADpy/
+
+–or–
+
+http://benknight.github.io/kuler-colorwheel-with-d3/
