@@ -200,7 +200,9 @@
       var p = self.svgToCartesian(d3.event.x, d3.event.y);
       var dragHue = ((Math.atan2(p.y, p.x) * 180 / Math.PI) + 720) % 360;
       var startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
-      self.setHarmony(this, dragHue - startingHue);
+      var theta1 = (360 + startingHue - dragHue) % 360;
+      var theta2 = (360 + dragHue - startingHue) % 360;
+      self.setHarmony(this, theta1 < theta2 ? -1 * theta1 : theta2);
     };
 
     var dragend = function () {
