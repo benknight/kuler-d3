@@ -52,7 +52,7 @@ body {
   background-position: center, 2px 5px;
   background-size: calc(100% - #{2 * $margin}), auto;
   background-repeat: no-repeat;
-
+  transform: translateZ(0);
 
   .marker {
     cursor: move;

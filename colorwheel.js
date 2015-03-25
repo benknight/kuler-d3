@@ -469,7 +469,7 @@
           this.select();
         });
 
-    colorWheel.dispatch.on('update.theme', function () {
+    colorWheel.dispatch.on('updateEnd.theme', function () {
       colorWheel.container.selectAll('.swatch').each(function (d, i) {
         switch (colorWheel.currentMode) {
           case ColorWheel.modes.TRIAD:
