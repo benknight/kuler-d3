@@ -17,6 +17,21 @@ body {
   margin: 0 auto;
 }
 
+#gradient {
+  opacity: 0.5;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 110%;
+  height: 100%;
+  filter: url(#wherearemyglasses);
+  -webkit-filter: blur(100px);
+  filter: blur(100px);
+  transform: translateZ(0);
+  transition: background-image 0.2s linear;
+}
+
 .colorwheel {
   position: relative;
   overflow: hidden; // to contain margins. bad idea? tonight at 11.
@@ -72,7 +87,7 @@ body {
     padding: 0 0.6% 20px;
 
     input {
-      opacity: 0.1;
+      opacity: 0.3;
     }
 
     &:hover input {

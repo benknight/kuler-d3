@@ -101,7 +101,7 @@
     var self = this;
 
     // Event Dispatch
-    this.dispatch = d3.dispatch('update');
+    this.dispatch = d3.dispatch('update', 'updateEnd');
 
     // Set configs
     this.options = {
@@ -207,6 +207,7 @@
 
     var dragend = function () {
       self.container.selectAll('.marker').attr('data-startingHue', null);
+      self.dispatch.updateEnd();
     };
 
     markers.call(
@@ -243,13 +244,13 @@
       });
     });
 
-    // phew
-    this.init();
-
     // init plugins
     ColorWheel.plugins.forEach(function (plugin) {
       plugin(self, data);
     });
+
+    // phew
+    this.init();
   };
 
   // Tack on the modes
@@ -347,6 +348,7 @@
         break;
     }
     this.dispatch.update();
+    this.dispatch.updateEnd();
   };
 
   ColorWheel.prototype.setHarmony = function (target, theta) {
@@ -395,9 +397,13 @@
 
   // Public ColorWheel interface
   ColorWheel.prototype._getColorsAs = function (toFunk) {
-    return this.container.selectAll('.marker').data().map(function (d) {
-      return tinycolor({h: d.h, s: d.s, v: d.v})[toFunk]();
-    });
+    return this.container.selectAll('.marker').data()
+      .sort(function (a, b) {
+        return a.h - b.h;
+      })
+      .map(function (d) {
+        return tinycolor({h: d.h, s: d.s, v: d.v})[toFunk]();
+      });
   };
 
   ColorWheel.prototype.getColorsAsHEX = function () {
@@ -444,6 +450,7 @@
       .on('input', function (d) {
         d.v = parseInt(this.value) / 100;
         colorWheel.dispatch.update();
+        colorWheel.dispatch.updateEnd();
       });
 
     // Add color codes
@@ -490,8 +497,6 @@
         this.value = colorWheel.options.colorString(c);
       });
     });
-
-    colorWheel.dispatch.update();
   });
 
   // Add mode toggle UI
@@ -509,6 +514,14 @@
           return ColorWheel.modes[mode] == colorWheel.currentMode ? 'selected' : null;
         });
     }
+  });
+
+  // Background gradient
+  ColorWheel.extend(function (colorWheel) {
+    colorWheel.dispatch.on('updateEnd.bg', function () {
+      var gradient = colorWheel.getColorsAsHEX().join();
+      d3.select('#gradient').style('background-image', 'linear-gradient(to right, ' + gradient + ')');
+    });
   });
 
   return ColorWheel;
