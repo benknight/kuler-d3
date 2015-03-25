@@ -5,14 +5,14 @@
 
 // The amount of space to leave on each side of the color wheel to allow
 // room for the markers when they're on the edge of the wheel.
-$margin: 20px;
+$margin: 25px;
 
 // URL to the color wheel asset.
 $color-wheel-url: 'https://raw.githubusercontent.com/'
                 + 'benknight/kuler-colorwheel-with-d3/master/colorwheel.png';
 
 body {
-  background: #222;
+  background: black;
   margin: 0 auto;
 }
 
