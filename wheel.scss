@@ -13,7 +13,6 @@ $color-wheel-url: 'https://raw.githubusercontent.com/'
 
 body {
   background: #222;
-  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -41,7 +40,7 @@ body {
   position: relative;
   z-index: 1;
   display: block;
-  margin: 20px auto 0;
+  margin: 60px auto 0;
   background-image:
     url($color-wheel-url),
     radial-gradient(
@@ -140,14 +139,12 @@ body {
   position: absolute;
   z-index: 2;
   top: 20px;
-  right: 15px;
+  right: 20px;
   height: 2em;
   border: none;
   background: #000;
   color: rgba(255, 255, 255, 0.75);
-  font-size: 18px;
-  box-shadow: 0 1px 1px black;
-  transition: color 0.1s ease;
+  font-size: 20px;
 
   &:hover {
     color: rgba(255, 255, 255, 0.9);
