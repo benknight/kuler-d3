@@ -518,9 +518,12 @@
 
   // Background gradient
   ColorWheel.extend(function (colorWheel) {
+    var gradient = colorWheel.container.append('div').attr('id', 'gradient');
     colorWheel.dispatch.on('updateEnd.bg', function () {
-      var gradient = colorWheel.getColorsAsHEX().join();
-      d3.select('#gradient').style('background-image', 'linear-gradient(to right, ' + gradient + ')');
+      var gradientStops = colorWheel.getColorsAsHEX();
+      gradientStops[0] += ' 10%';
+      gradientStops[gradientStops.length - 1] += ' 90%';
+      gradient.style('background-image', 'linear-gradient(to right, ' + gradientStops.join() + ')');
     });
   });
 

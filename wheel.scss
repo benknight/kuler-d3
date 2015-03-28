@@ -17,6 +17,7 @@ body {
 }
 
 #gradient {
+  z-index: -1;
   opacity: 0.5;
   filter: url(#wherearemyglasses);
   -webkit-filter: blur(150px);
