@@ -1,4 +1,4 @@
-// Kuler Color Wheel with D3 v1.0
+// Kuler Color Wheel with D3
 // http://github.com/benknight/kuler-colorwheel-with-d3
 // Benjamin Knight / MIT License
 
@@ -52,7 +52,7 @@
   // Domain: [0, 1,  2, 3,  4, ... ]
   // Range:  [0, 1, -1, 2, -2, ... ]
   function markerDistance(i) {
-    return Math.ceil(i / 2) * (2 * (i % 2) - 1);
+    return Math.ceil(i / 2) * Math.pow(-1, i + 1);
   }
 
   // Returns a step function with the given base.
@@ -395,7 +395,6 @@
     this.dispatch.update();
   };
 
-  // Public ColorWheel interface
   ColorWheel.prototype._getColorsAs = function (toFunk) {
     return this.container.selectAll('.marker').data()
       .sort(function (a, b) {
