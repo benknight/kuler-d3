@@ -526,7 +526,10 @@
 
   // Background gradient
   ColorWheel.extend(function (colorWheel) {
-    var gradient = colorWheel.container.append('div').attr('id', 'gradient');
+    var gradient = d3.select('#gradient');
+    if (! gradient.size()) {
+      gradient = colorWheel.container.append('div').attr('id', 'gradient');
+    }
     colorWheel.dispatch.on('updateEnd.bg', function () {
       var gradientStops = colorWheel.getColorsAsHEX();
       gradientStops[0] += ' 10%';
