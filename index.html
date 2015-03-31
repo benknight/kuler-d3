@@ -26,7 +26,15 @@
   <script src="bower_components/tinycolor/tinycolor.js"></script>
   <script src="colorwheel.js"></script>
   <script>
-    var colorWheel = new ColorWheel(5, '#colorwheel', {markerWidth: 40, margin: 25});
+    var colorWheel = new ColorWheel(
+      [
+        {name: 'Blue', colorString: 'blue'},
+        {name: 'Red', colorString: 'red'},
+        {name: 'Yellow', colorString: 'yellow'}
+      ],
+      '#colorwheel',
+      {markerWidth: 40, margin: 25}
+    );
   </script>
 </body>
 </html>

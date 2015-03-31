@@ -11,6 +11,7 @@
     root.ColorWheel = factory(root.tinycolor, root.d3);
   }
 }(this, function (tinycolor, d3) {
+  'use strict';
 
   // Simple range mapping function
   // For example, mapRange(5, 0, 10, 0, 100) = 50
@@ -117,7 +118,7 @@
     };
 
     if (typeof options === 'object') {
-      for (option in options) {
+      for (var option in options) {
         if (option == 'initMode') {
           checkIfModeExists(options[option]);
         }
@@ -129,21 +130,25 @@
       container = document.body;
     }
 
-    if (typeof data === 'object') {
+    if (data.constructor === Array) {
       // Parse data as tinycolor and convert to HSV
-      var newData = [];
-      for (var datum in data) {
-        newData.push(tinycolor(data[datum]).toHsv());
-      }
-      data = newData;
+      var data = data.map(function (datum) {
+        var d;
+        if (typeof datum === 'string') {
+          d = tinycolor(datum).toHsv();
+        } else if (typeof datum === 'object') {
+          d = tinycolor(datum.colorString).toHsv();
+          d.name = datum.name;
+        }
+        return d;
+      });
       this.currentMode = modes.CUSTOM;
     } else {
-      var newData = [];
+      // We weren't given any data so create our own.
       var numColors = (typeof data === 'number') ? data : 5;
-      for (var i = 0; i < data; i++) {
-        newData.push(tinycolor(this.options.initRoot).toHsv());
-      }
-      data = newData;
+      data = Array.apply(null, {length: numColors}).map(function () {
+        return tinycolor(self.options.initRoot).toHsv();
+      });
       this.currentMode = this.options.initMode;
     }
 
@@ -182,6 +187,10 @@
     markers.enter().append('circle')
       .attr('class', 'marker')
       .attr('r', this.options.markerWidth / 2);
+
+    markers.append('title').text(function (d) {
+      return d.name;
+    });
 
     markers.exit().remove();
 
