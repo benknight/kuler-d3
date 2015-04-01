@@ -107,8 +107,8 @@
     // Set configs
     this.options = {
       width: 350,
-      markerWidth: 30,
-      margin: 20,
+      markerWidth: 40,
+      margin: 25,
       defaultSlice: 20,
       initRoot: 'red',
       initMode: modes.ANALOGOUS,
