@@ -55,14 +55,28 @@ body {
   transform: translateZ(0);
 
   .marker {
-    cursor: move;
-    stroke: white;
-    stroke-width: 2px;
-    stroke-opacity: 0.9;
+    circle {
+      cursor: move;
+      stroke: white;
+      stroke-width: 2px;
+      stroke-opacity: 0.9;
+    }
 
-    &:first-child {
+    &:first-child circle {
       stroke-opacity: 1;
       stroke-width: 5px;
+    }
+
+    text {
+      fill: white;
+      font-size: 13px;
+      text-shadow:
+        1px 1px 1px black,
+        0 0 3px rgba(0, 0, 0, 0.25);
+
+      [data-mode=Shades] & {
+        display: none;
+      }
     }
   }
 
