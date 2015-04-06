@@ -157,39 +157,71 @@
 
     // --- Draw the UI ---
 
-    var wheel = this.container.append('svg')
-      .attr('class', 'wheel')
-      .attr('width', this.options.width + 2 * this.options.margin)
-      .attr('height', this.options.width + 2 * this.options.margin);
+    var wheel = this.container.append('svg').attr({
+      class: 'wheel',
+      width: this.options.width + 2 * this.options.margin,
+      height: this.options.width + 2 * this.options.margin
+    });
 
-    var markerTrailsContainer = wheel.append('g')
-      .attr('class', 'marker-trails')
-      .attr('width', this.options.width)
-      .attr('height', this.options.width)
-      .attr('transform', 'translate(' + this.options.margin + ', ' + this.options.margin + ')');
+    var wheelShadow = wheel.append('circle').attr({
+      fill: 'black',
+      r: this.r,
+      cx: this.r,
+      cy: this.r,
+      transform: 'translate(' + (this.options.margin + 4) + ', ' + (this.options.margin + 4) + ')'
+    });
+
+    var wheelImage = wheel.append('image').attr({
+      width: this.options.width,
+      height: this.options.width,
+      transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')',
+      'xlink:href': 'colorwheel.png'
+    });
+
+    var markerTrailsContainer = wheel.append('g').attr({
+      class: 'marker-trails',
+      width: this.options.width,
+      height: this.options.width,
+      transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')'
+    });
 
     var markerTrails = markerTrailsContainer.selectAll('.marker-trail').data(data);
 
-    markerTrails.enter().append('line')
-      .attr('class', 'marker-trail')
-      .attr('x1', this.options.width / 2)
-      .attr('y1', this.options.width / 2);
+    markerTrails.enter().append('line').attr({
+      class: 'marker-trail',
+      x1: this.r,
+      y1: this.r,
+      stroke: 'white',
+      'stroke-opacity': '0.75',
+      'stroke-width': '3px',
+      'stroke-dasharray': '10, 6'
+    });
 
-    var markersContainer = wheel.append('g')
-      .attr('class', 'markers')
-      .attr('width', this.options.width)
-      .attr('height', this.options.width)
-      .attr('transform', 'translate(' + this.options.margin + ', ' + this.options.margin + ')');
+    var markersContainer = wheel.append('g').attr({
+      class: 'markers',
+      width: this.options.width,
+      height: this.options.width,
+      transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')'
+    });
 
     var markers = markersContainer.selectAll('.marker').data(data);
 
     markers.enter()
       .append('g').attr('class', 'marker')
-      .append('circle').attr('r', this.options.markerWidth / 2);
+      .append('circle')
+      .attr({
+        'r': this.options.markerWidth / 2,
+        'stroke': 'white',
+        'stroke-width': '2px',
+        'stroke-opacity': '0.9',
+        'cursor': 'move'
+      });
 
     markers.append('text').text(function (d) { return d.name; }).attr({
         x: (this.options.markerWidth / 2) + 8,
-        y: (this.options.markerWidth / 4) - 5
+        y: (this.options.markerWidth / 4) - 5,
+        fill: 'white',
+        'font-size': '13px',
       });
 
     markers.exit().remove();

@@ -3,14 +3,6 @@
  * Modify at your leasure!
  */
 
-// The amount of space to leave on each side of the color wheel to allow
-// room for the markers when they're on the edge of the wheel.
-$margin: 25px;
-
-// URL to the color wheel asset.
-$color-wheel-url: 'https://raw.githubusercontent.com/'
-                + 'benknight/kuler-colorwheel-with-d3/master/colorwheel.png';
-
 body {
   background: black;
   margin: 0 auto;
@@ -41,35 +33,14 @@ body {
   z-index: 1;
   display: block;
   margin: 60px auto 0;
-  background-image:
-    url($color-wheel-url),
-    radial-gradient(
-      closest-side,
-      rgba(0, 0, 0, 0.9) 0px,
-      rgba(0, 0, 0, 0.9) calc(100% - #{$margin}),
-      transparent calc(100% - #{$margin})
-    );
-  background-position: center, 2px 5px;
-  background-size: calc(100% - #{2 * $margin}), auto;
-  background-repeat: no-repeat;
-  transform: translateZ(0);
 
   .marker {
-    circle {
-      cursor: move;
-      stroke: white;
-      stroke-width: 2px;
-      stroke-opacity: 0.9;
-    }
-
     &:first-child circle {
       stroke-opacity: 1;
       stroke-width: 5px;
     }
 
     text {
-      fill: white;
-      font-size: 13px;
       text-shadow:
         1px 1px 1px black,
         0 0 3px rgba(0, 0, 0, 0.25);
@@ -78,13 +49,6 @@ body {
         display: none;
       }
     }
-  }
-
-  .marker-trail {
-    stroke: white;
-    stroke-opacity: 0.75;
-    stroke-width: 3px;
-    stroke-dasharray: 10, 6;
   }
 }
 
