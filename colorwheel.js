@@ -294,7 +294,7 @@
 
     // init plugins
     for (var pluginId in ColorWheel.plugins) {
-      if (typeof ColorWheel.plugins[pluginId] == 'function') {}
+      if (typeof ColorWheel.plugins[pluginId] == 'function') {
         ColorWheel.plugins[pluginId](self, data);
       }
     }
