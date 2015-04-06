@@ -33,4 +33,4 @@ http://codepen.io/benknight/full/nADpy/
 
 –or–
 
-http://benknight.github.io/kuler-colorwheel-with-d3/
+http://benknight.github.io/kuler-d3/
