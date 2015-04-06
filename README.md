@@ -1,6 +1,10 @@
-<h1><img src="https://raw.githubusercontent.com/benknight/kuler-d3/master/colorwheel.png" align="left" width="55" hspace="10">Kuler Color Wheel with D3</h1>
+<h1><img src="https://raw.githubusercontent.com/benknight/kuler-d3/master/colorwheel.png" align="left" width="55" hspace="10">Color Wheel with D3</h1>
 
-> Reconstruction of the color wheel UI found on http://kuler.adobe.com, built with D3.
+> Reconstruction of the color wheel UI found on http://color.adobe.com (formerly known as Kuler) using [D3.js](https://github.com/mbostock/d3).
+
+## Demo
+
+http://benknight.github.io/kuler-d3/
 
 ## Usage
 
@@ -10,7 +14,7 @@ By specifying a number of colors:
 var colorWheel = new ColorWheel(5, '.colorwheel');
 ```
     
-With preexisting color values:
+or, with preexisting color values:
 
 ```javascript
 // Use any valid tinycolor input
@@ -26,11 +30,3 @@ var data = [
 
 var colorWheel = new ColorWheel(data, '.colorwheel');
 ```
-
-## Demo
-
-http://codepen.io/benknight/full/nADpy/
-
-–or–
-
-http://benknight.github.io/kuler-d3/

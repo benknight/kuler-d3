@@ -1,6 +1,7 @@
-// Kuler Color Wheel with D3
+// Color Wheel with D3
 // http://github.com/benknight/kuler-d3
-// Benjamin Knight / MIT License
+// Benjamin Knight
+// MIT License
 
 (function (root, factory) {
   // AMD/requirejs: Define the module
