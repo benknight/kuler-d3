@@ -175,7 +175,7 @@
       width: this.options.width,
       height: this.options.width,
       transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')',
-      'xlink:href': 'colorwheel.png'
+      'xlink:href': 'http://benknight.github.io/kuler-colorwheel-with-d3/colorwheel.png'
     });
 
     var markerTrailsContainer = wheel.append('g').attr({
@@ -294,7 +294,9 @@
 
     // init plugins
     for (var pluginId in ColorWheel.plugins) {
-      ColorWheel.plugins[pluginId](self, data);
+      if (typeof ColorWheel.plugins[pluginId] == 'function') {}
+        ColorWheel.plugins[pluginId](self, data);
+      }
     }
 
     // phew
