@@ -1,5 +1,5 @@
 // Kuler Color Wheel with D3
-// http://github.com/benknight/kuler-colorwheel-with-d3
+// http://github.com/benknight/kuler-d3
 // Benjamin Knight / MIT License
 
 (function (root, factory) {
@@ -175,7 +175,7 @@
       width: this.options.width,
       height: this.options.width,
       transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')',
-      'xlink:href': 'http://benknight.github.io/kuler-colorwheel-with-d3/colorwheel.png'
+      'xlink:href': 'http://benknight.github.io/kuler-d3/colorwheel.png'
     });
 
     var markerTrailsContainer = wheel.append('g').attr({
