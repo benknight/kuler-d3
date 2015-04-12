@@ -104,18 +104,19 @@
     // Cache a reference to this
     var self = this;
 
-    // Set configs
+    // Set default configs
     this.options = {
       width: 350,
       markerWidth: 40,
-      margin: 25,
-      defaultSlice: 20,
+      defaultSlice: 15,
       initRoot: 'red',
       initMode: modes.ANALOGOUS,
       colorString: function (color) {
         return color.toHexString();
       }
     };
+
+    this.options.margin = this.options.markerWidth;
 
     if (typeof options === 'object') {
       for (var option in options) {
@@ -160,8 +161,14 @@
 
     var wheel = this.container.append('svg').attr({
       class: 'wheel',
-      width: this.options.width + 2 * this.options.margin,
-      height: this.options.width + 2 * this.options.margin
+      width: this.options.width,
+      height: this.options.width,
+      viewBox: [
+        -1 * this.options.margin,
+        -1 * this.options.margin,
+        this.options.width + 2 * this.options.margin,
+        this.options.width + 2 * this.options.margin
+      ].join(' ')
     });
 
     var wheelShadow = wheel.append('circle').attr({
@@ -169,41 +176,27 @@
       r: this.r,
       cx: this.r,
       cy: this.r,
-      transform: 'translate(' + (this.options.margin + 4) + ', ' + (this.options.margin + 4) + ')'
+      transform: 'translate(4, 4)'
     });
 
     var wheelImage = wheel.append('image').attr({
       width: this.options.width,
       height: this.options.width,
-      transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')',
       'xlink:href': 'http://benknight.github.io/kuler-d3/colorwheel.png'
     });
 
     var markerTrailsContainer = wheel.append('g').attr({
       class: 'marker-trails',
-      width: this.options.width,
-      height: this.options.width,
-      transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')'
     });
 
     var markerTrails = markerTrailsContainer.selectAll('.marker-trail').data(data);
 
     markerTrails.enter().append('line').attr({
-      class: 'marker-trail',
-      x1: this.r,
-      y1: this.r,
-      stroke: 'white',
-      'stroke-opacity': '0.75',
-      'stroke-width': '3px',
-      'stroke-dasharray': '10, 6'
+      class: 'marker-trail', x1: this.r, y1: this.r, stroke: 'white',
+      'stroke-opacity': 0.75, 'stroke-width': 3, 'stroke-dasharray': '10, 6'
     });
 
-    var markersContainer = wheel.append('g').attr({
-      class: 'markers',
-      width: this.options.width,
-      height: this.options.width,
-      transform: 'translate(' + this.options.margin + ', ' + this.options.margin + ')'
-    });
+    var markersContainer = wheel.append('g').attr('class', 'markers');
 
     var markers = markersContainer.selectAll('.marker').data(data);
 
@@ -213,8 +206,8 @@
       .attr({
         'r': this.options.markerWidth / 2,
         'stroke': 'white',
-        'stroke-width': '2px',
-        'stroke-opacity': '0.9',
+        'stroke-width': 2,
+        'stroke-opacity': 0.9,
         'cursor': 'move'
       });
 
@@ -527,7 +520,7 @@
           this.select();
         });
 
-    colorWheel.dispatch.on('updateEnd.theme', function () {
+    colorWheel.dispatch.on('update.theme', function () {
       colorWheel.container.selectAll('.swatch').each(function (d, i) {
         switch (colorWheel.currentMode) {
           case ColorWheel.modes.TRIAD:
