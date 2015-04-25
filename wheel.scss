@@ -11,8 +11,8 @@ body {
 #gradient {
   z-index: -1;
   opacity: 0.5;
-  -webkit-filter: url(filters.svg#wherearemyglasses);
-  filter: url(filters.svg#wherearemyglasses);
+  -webkit-filter: url(#wherearemyglasses);
+  filter: url(#wherearemyglasses);
   display: block;
   position: fixed;
   top: 0;
