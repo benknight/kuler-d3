@@ -185,23 +185,22 @@
       'xlink:href': 'http://benknight.github.io/kuler-d3/colorwheel.png'
     });
 
-    var markerTrailsContainer = wheel.append('g').attr({
-      class: 'marker-trails',
-    });
-
-    var markerTrails = markerTrailsContainer.selectAll('.marker-trail').data(data);
+    var markerTrails = wheel.append('g').selectAll('.wheel__marker-trail').data(data);
 
     markerTrails.enter().append('line').attr({
-      class: 'marker-trail', x1: this.r, y1: this.r, stroke: 'white',
-      'stroke-opacity': 0.75, 'stroke-width': 3, 'stroke-dasharray': '10, 6'
+      'class': 'wheel__marker-trail',
+      'x1': this.r,
+      'y1': this.r,
+      'stroke': 'white',
+      'stroke-opacity': 0.75,
+      'stroke-width': 3,
+      'stroke-dasharray': '10, 6'
     });
 
-    var markersContainer = wheel.append('g').attr('class', 'markers');
-
-    var markers = markersContainer.selectAll('.marker').data(data);
+    var markers = wheel.append('g').selectAll('.wheel__marker').data(data);
 
     markers.enter()
-      .append('g').attr('class', 'marker')
+      .append('g').attr('class', 'wheel__marker')
       .append('circle')
       .attr({
         'r': this.options.markerWidth / 2,
@@ -224,7 +223,7 @@
     this.dispatch = d3.dispatch('update', 'updateEnd');
 
     var dragstart = function () {
-      self.container.selectAll('.marker')
+      self.container.selectAll('.wheel__marker')
         .attr('data-startingHue', function (d) {
           return scientificToArtisticSmooth(d.h);
         });
@@ -245,7 +244,7 @@
     };
 
     var dragend = function () {
-      self.container.selectAll('.marker').attr('data-startingHue', null);
+      self.container.selectAll('.wheel__marker').attr('data-startingHue', null);
       self.dispatch.updateEnd();
     };
 
@@ -257,7 +256,7 @@
     );
 
     this.dispatch.on('update.markers', function () {
-      self.container.selectAll('.marker').attr({
+      self.container.selectAll('.wheel__marker').attr({
           transform: function (d) {
             var hue = scientificToArtisticSmooth(d.h);
             var p = self.getSVGPositionFromHS(d.h, d.s);
@@ -270,7 +269,7 @@
             return hexFromHS(d.h, d.s);
           }
         });
-      self.container.selectAll('.marker-trail').attr({
+      self.container.selectAll('.wheel__marker-trail').attr({
         'x2': function (d) {
           var p = self.getSVGPositionFromHS(d.h, d.s);
           return p.x;
@@ -349,12 +348,12 @@
 
   ColorWheel.prototype.init = function () {
     var self = this;
-    var root = this.container.select('.marker');
+    var root = this.container.select('.wheel__marker');
     var rootHue = scientificToArtisticSmooth(root.datum().h);
 
     switch (this.currentMode) {
       case modes.ANALOGOUS:
-        this.container.selectAll('.marker').each(function (d, i) {
+        this.container.selectAll('.wheel__marker').each(function (d, i) {
           var newHue = (rootHue + (markerDistance(i) * self.options.defaultSlice) + 720) % 360;
           d.h = artisticToScientificSmooth(newHue);
           d.s = 1;
@@ -363,7 +362,7 @@
         break;
       case modes.MONOCHROMATIC:
       case modes.SHADES:
-        this.container.selectAll('.marker').each(function (d, i) {
+        this.container.selectAll('.wheel__marker').each(function (d, i) {
           d.h = artisticToScientificSmooth(rootHue);
           if (self.currentMode == modes.SHADES) {
             d.s = 1;
@@ -375,7 +374,7 @@
         });
         break;
       case modes.COMPLEMENTARY:
-        this.container.selectAll('.marker').each(function (d, i) {
+        this.container.selectAll('.wheel__marker').each(function (d, i) {
           var newHue = (rootHue + ((i % 2) * 180) + 720) % 360;
           d.h = artisticToScientificSmooth(newHue);
           d.s = 1 - 0.2 * stepFn(2)(i);
@@ -383,7 +382,7 @@
         });
         break;
       case modes.TRIAD:
-        this.container.selectAll('.marker').each(function (d, i) {
+        this.container.selectAll('.wheel__marker').each(function (d, i) {
           var newHue = (rootHue + ((i % 3) * 120) + 720) % 360;
           d.h = artisticToScientificSmooth(newHue);
           d.s = 1 - 0.3 * stepFn(3)(i);
@@ -391,7 +390,7 @@
         });
         break;
       case modes.TETRAD:
-        this.container.selectAll('.marker').each(function (d, i) {
+        this.container.selectAll('.wheel__marker').each(function (d, i) {
           var newHue = (rootHue + ((i % 4) * 90) + 720) % 360;
           d.h = artisticToScientificSmooth(newHue);
           d.s = 1 - 0.4 * stepFn(4)(i);
@@ -405,7 +404,7 @@
 
   ColorWheel.prototype.setHarmony = function (target, theta) {
     var self = this;
-    var root = this.container.select('.marker');
+    var root = this.container.select('.wheel__marker');
     var rootHue = scientificToArtisticSmooth(root.datum().h);
 
     // Find out how far the dragging marker is from the root marker.
@@ -418,7 +417,7 @@
 
     switch (this.currentMode) {
       case modes.ANALOGOUS:
-        this.container.selectAll('.marker').each(function (d, i) {
+        this.container.selectAll('.wheel__marker').each(function (d, i) {
           var startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
           var slices = 1;
           if (targetDistance !== 0) {
@@ -436,7 +435,7 @@
       case modes.SHADES:
       case modes.TRIAD:
       case modes.TETRAD:
-        this.container.selectAll('.marker').each(function (d) {
+        this.container.selectAll('.wheel__marker').each(function (d) {
           var startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
           d.h = artisticToScientificSmooth((startingHue + theta + 720) % 360);
           if (self.currentMode == modes.SHADES) {
@@ -448,7 +447,7 @@
   };
 
   ColorWheel.prototype._getColorsAs = function (toFunk) {
-    return this.container.selectAll('.marker').data()
+    return this.container.selectAll('.wheel__marker').data()
       .sort(function (a, b) {
         return a.h - b.h;
       })
@@ -486,16 +485,16 @@
     var swatches = theme.selectAll('div').data(data);
 
     swatches.enter().append('div')
-      .attr('class', 'swatch')
-      .append('div')
-        .attr('class', 'color');
+      .attr('class', 'theme__swatch')
+      .append('div').attr('class', 'theme__color');
+
     swatches.exit().remove();
 
     // Add sliders
-    var sliders = theme.selectAll('.swatch')
+    var sliders = theme.selectAll('.theme__swatch')
       .append('input')
       .attr('type', 'range')
-      .attr('class', 'slider')
+      .attr('class', 'theme__slider')
       .on('input', function (d) {
         d.v = parseInt(this.value) / 100;
         colorWheel.dispatch.update();
@@ -505,10 +504,10 @@
       });
 
     // Add color codes
-    var colorValues = theme.selectAll('.swatch')
+    var colorValues = theme.selectAll('.theme__swatch')
       .append('input')
         .attr('type', 'text')
-        .attr('class', 'value')
+        .attr('class', 'theme__value')
         .on('focus', function () {
           // Like jQuery's .one(), attach a listener that only executes once.
           // This way the user can use the cursor normally after the initial selection.
@@ -521,7 +520,7 @@
         });
 
     colorWheel.dispatch.on('update.theme', function () {
-      colorWheel.container.selectAll('.swatch').each(function (d, i) {
+      colorWheel.container.selectAll('.theme__swatch').each(function (d, i) {
         switch (colorWheel.currentMode) {
           case ColorWheel.modes.TRIAD:
             this.style.order = this.style.webkitOrder = i % 3;
@@ -532,18 +531,18 @@
         }
       });
 
-      colorWheel.container.selectAll('.color').each(function (d) {
+      colorWheel.container.selectAll('.theme__color').each(function (d) {
         var c = tinycolor({h: d.h, s: d.s, v: d.v});
         this.style.backgroundColor = c.toHexString();
       });
 
-      colorWheel.container.selectAll('.slider').each(function (d) {
+      colorWheel.container.selectAll('.theme__slider').each(function (d) {
         var val = parseInt(d.v * 100);
         this.value = val;
         d3.select(this).attr('value', val);
       });
 
-      colorWheel.container.selectAll('.value').each(function (d) {
+      colorWheel.container.selectAll('.theme__value').each(function (d) {
         var c = tinycolor({h: d.h, s: d.s, v: d.v});
         this.value = colorWheel.options.colorString(c);
       });
@@ -571,7 +570,10 @@
   ColorWheel.extend('bgGradient', function (colorWheel) {
     var gradient = d3.select('#gradient');
     if (! gradient.size()) {
-      gradient = colorWheel.container.append('div').attr('id', 'gradient');
+      gradient = colorWheel.container.append('div').attr({
+        'id': 'gradient',
+        'class': 'gradient'
+      });
     }
     colorWheel.dispatch.on('updateEnd.bg', function () {
       var gradientStops = colorWheel.getColorsAsHEX();

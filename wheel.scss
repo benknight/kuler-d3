@@ -1,26 +1,19 @@
-/**
- * Default color wheel theme
- * Modify at your leasure!
- */
+/*! Kuler D3 by Benjamin Knight */
+
+
+/** Base & Generic */
+
+html {
+  min-height: 100%;
+}
 
 body {
   background: black;
   margin: 0 auto;
 }
 
-#gradient {
-  z-index: -1;
-  opacity: 0.5;
-  -webkit-filter: url(#wherearemyglasses);
-  filter: url(#wherearemyglasses);
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: translateZ(0);
-}
+
+/** Components */
 
 .colorwheel {
   position: relative;
@@ -34,21 +27,21 @@ body {
   width: 400px;
   height: 400px;
   margin: 60px auto 0;
+}
 
-  .marker {
-    &:first-child circle {
-      stroke-opacity: 1;
-      stroke-width: 5px;
-    }
+.wheel__marker {
+  &:first-child circle {
+    stroke-opacity: 1;
+    stroke-width: 5px;
+  }
 
-    text {
-      text-shadow:
-        1px 1px 1px black,
-        0 0 3px rgba(0, 0, 0, 0.25);
+  text {
+    text-shadow:
+      1px 1px 1px black,
+      0 0 3px rgba(0, 0, 0, 0.25);
 
-      [data-mode=Shades] & {
-        display: none;
-      }
+    [data-mode=Shades] & {
+      display: none;
     }
   }
 }
@@ -59,59 +52,59 @@ body {
   max-width: 450px;
   min-width: 350px;
   margin: 10px auto 0;
+}
 
-  .swatch {
-    flex: 1;
-    padding: 0 0.6% 20px;
+.theme__swatch {
+  flex: 1;
+  padding: 0 0.6% 20px;
 
-    input {
-      opacity: 0.3;
-    }
-
-    &:hover input {
-      opacity: 0.75;
-    }
-
-    .color {
-      position: relative;
-      border-radius: 50%;
-      padding-top: 100%;
-      box-shadow: 2px 2px 0 black;
-    }
-
-    .slider {
-      position: relative;
-      display: block;
-      width: 100%;
-      margin: 0 0 15px;
-      -webkit-appearance: none;
-      outline: none;
-      background: transparent;
-
-      &:before {
-        content: attr(value) '%';
-        display: block;
-        position: absolute;
-        z-index: -1;
-        top: 30px;
-        width: 100%;
-        font-size: 10px;
-        text-align: center;
-        color: white;
-        text-shadow: 1px 0 1px rgba(0, 0, 0, 0.5);
-      }
-    }
-
-    .value {
-      outline: none;
-      width: 100%;
-      border: none;
-      font-family: Monaco, monospace;
-      text-align: center;
-      background: transparent;
-      color: white;
-    }
+  input {
+    opacity: 0.3;
   }
+
+  &:hover input {
+    opacity: 0.75;
+  }
+}
+
+.theme__color {
+  position: relative;
+  border-radius: 50%;
+  padding-top: 100%;
+  box-shadow: 2px 2px 0 black;
+}
+
+.theme__slider {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0 0 15px;
+  -webkit-appearance: none;
+  outline: none;
+  background: transparent;
+
+  &:before {
+    content: attr(value) '%';
+    display: block;
+    position: absolute;
+    z-index: -1;
+    top: 30px;
+    width: 100%;
+    font-size: 10px;
+    text-align: center;
+    color: white;
+    text-shadow: 1px 0 1px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.theme__value {
+  outline: none;
+  width: 100%;
+  border: none;
+  font-family: Monaco, monospace;
+  text-align: center;
+  background: transparent;
+  color: white;
 }
 
 .mode-toggle {
@@ -130,8 +123,22 @@ body {
   }
 }
 
+.gradient {
+  z-index: -1;
+  opacity: 0.5;
+  -webkit-filter: url(#wherearemyglasses);
+  filter: url(#wherearemyglasses);
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0);
+}
 
-// Slider styles
+
+/** Trumps */
 
 ::-webkit-slider-runnable-track {
   -webkit-appearance: none;
