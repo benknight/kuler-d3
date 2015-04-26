@@ -1,5 +1,5 @@
 // Add mode toggle UI
-ColorWheel && ColorWheel.extend('modeToggle', function (colorWheel) {
+ColorWheel.extend('modeToggle', function (colorWheel) {
   var modeToggle = colorWheel.container.append('select')
     .attr('class', 'mode-toggle')
     .on('change', function () {

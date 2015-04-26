@@ -1,5 +1,5 @@
 // Add theme UI
-ColorWheel && ColorWheel.extend('theme', function (colorWheel, data) {
+ColorWheel.extend('theme', function (colorWheel, data) {
   var theme = colorWheel.container.append('div').attr('class', 'theme');
   var swatches = theme.selectAll('div').data(data);
 
