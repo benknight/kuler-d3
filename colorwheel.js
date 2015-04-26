@@ -23,6 +23,7 @@
       width: 350,
       markerWidth: 40,
       defaultSlice: 15,
+      preserveAspectRatio: '',
       initRoot: 'red',
       initMode: ColorWheel.modes.ANALOGOUS,
       colorString: function (color) {
@@ -82,7 +83,8 @@
         -1 * this.options.margin,
         this.options.width + 2 * this.options.margin,
         this.options.width + 2 * this.options.margin
-      ].join(' ')
+      ].join(' '),
+      preserveAspectRatio: this.options.preserveAspectRatio
     });
 
     var wheelShadow = wheel.append('circle').attr({
