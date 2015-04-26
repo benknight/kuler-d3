@@ -30,7 +30,7 @@
       }
     };
 
-    this.options.margin = this.options.markerWidth + 'px';
+    this.options.margin = this.options.markerWidth;
 
     if (typeof options === 'object') {
       for (var option in options) {
@@ -73,18 +73,15 @@
 
     // --- Draw the UI ---
 
-    var div = document.createElement('div');
-    div.style.margin = this.options.margin;
-
     var wheel = this.container.append('svg').attr({
       class: 'wheel',
       width: this.options.width,
       height: this.options.width,
       viewBox: [
-        -1 * parseInt(div.style.marginLeft),
-        -1 * parseInt(div.style.marginTop),
-        this.options.width + 2 * parseInt(div.style.marginRight),
-        this.options.width + 2 * parseInt(div.style.marginBottom)
+        -1 * this.options.margin,
+        -1 * this.options.margin,
+        this.options.width + 2 * this.options.margin,
+        this.options.width + 2 * this.options.margin
       ].join(' ')
     });
 
