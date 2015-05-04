@@ -15,11 +15,6 @@ body {
 
 /** Components */
 
-.colorwheel {
-  position: relative;
-  overflow: hidden; // to contain margins. bad idea? tonight at 11.
-}
-
 .wheel {
   position: relative;
   z-index: 1;
@@ -126,8 +121,8 @@ body {
 .gradient {
   z-index: -1;
   opacity: 0.5;
-  -webkit-filter: url(#wherearemyglasses);
-  filter: url(#wherearemyglasses);
+  -webkit-filter: url(#blur);
+  filter: url(#blur);
   display: block;
   position: fixed;
   top: 0;
