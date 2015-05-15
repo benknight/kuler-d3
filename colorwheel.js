@@ -17,17 +17,20 @@
   var ColorWheel = function ColorWheel (options) {
     var self = this;
 
+
+    // --- Settings ---
+
     this.options = {
       container: document.body,
-      width: 350,
+      radius: 175,
+      margin: 40, // space around the edge of the wheel
       markerWidth: 40,
       defaultSlice: 15,
       initRoot: 'red',
       initMode: ColorWheel.modes.ANALOGOUS
     };
 
-    this.options.margin = this.options.markerWidth;
-
+    // Merge default options with options param. (Similar to jQuery.extend)
     if (typeof options === 'object') {
       for (var option in options) {
         if (option == 'initMode') {
@@ -37,62 +40,65 @@
       }
     }
 
+    var diameter = this.options.radius * 2;
     this.currentMode = this.options.initMode;
     this.container = d3.select(this.options.container);
-    this.r = this.options.width / 2;
 
-    // Append DOM Nodes
+
+    // --- Nodes ---
+
     this.$ = {};
 
     this.$.wheel = this.container.append('svg').attr({
       'class': 'wheel',
-      width: this.options.width,
-      height: this.options.width,
+      width: diameter,
+      height: diameter,
       viewBox: [
         -1 * this.options.margin,
         -1 * this.options.margin,
-        this.options.width + 2 * this.options.margin,
-        this.options.width + 2 * this.options.margin
+        diameter + 2 * this.options.margin,
+        diameter + 2 * this.options.margin
       ].join(' ')
     });
 
     this.$.wheel.append('circle').attr({
       fill: 'black',
-      r: this.r,
-      cx: this.r,
-      cy: this.r,
+      r: this.options.radius,
+      cx: this.options.radius,
+      cy: this.options.radius,
       transform: 'translate(4, 4)'
     });
 
     this.$.wheel.append('image').attr({
-      width: this.options.width,
-      height: this.options.width,
+      width: diameter,
+      height: diameter,
       'xlink:href': 'http://benknight.github.io/kuler-d3/wheel.png'
     });
 
     this.$.markerTrails = this.$.wheel.append('g');
     this.$.markers = this.$.wheel.append('g');
 
+
+    // --- Events ---
+
     this.dispatch = d3.dispatch('update', 'updateEnd', 'bindData');
 
-    this.dispatch.on('bindData.setHarmony', function () {
+    this.dispatch.on('bindData.default', function () {
       self.setHarmony();
     });
 
-    this.dispatch.on('update.updateMarkers', function () {
+    this.dispatch.on('update.default', function () {
       self.container.selectAll('.wheel__marker').attr({
-          transform: function (d) {
-            var hue = ColorWheel.scientificToArtisticSmooth(d.h);
-            var p = self.getSVGPositionFromHS(d.h, d.s);
-            return [
-              'translate(' + [p.x, p.y].join() + ')'
-            ].join(' ');
-          }
-        }).select('circle').attr({
-          fill: function (d) {
-            return ColorWheel.hexFromHS(d.h, d.s);
-          }
-        });
+        transform: function (d) {
+          var hue = ColorWheel.scientificToArtisticSmooth(d.h);
+          var p = self.getSVGPositionFromHS(d.h, d.s);
+          return ['translate(' + [p.x, p.y].join() + ')'].join(' ');
+        }
+      }).select('circle').attr({
+        fill: function (d) {
+          return ColorWheel.hexFromHS(d.h, d.s);
+        }
+      });
 
       self.container.selectAll('.wheel__marker-trail').attr({
         'x2': function (d) {
@@ -106,11 +112,13 @@
       });
     });
 
-    this.dispatch.on('updateEnd.addModeClass', function () {
+    this.dispatch.on('updateEnd.default', function () {
       self.container.attr('data-mode', self.currentMode);
     });
 
-    // init plugins
+
+    // --- Plugins ---
+
     for (var pluginId in ColorWheel.plugins) {
       if (typeof ColorWheel.plugins[pluginId] == 'function') {
         ColorWheel.plugins[pluginId](this);
@@ -121,7 +129,7 @@
   ColorWheel.prototype.bindData = function (data) {
     var self = this;
 
-    // Data can be passed as a whole number, array of tinycolors, or array of
+    // Data can be passed as a whole number, array of color strings, or array of
     // objects with keys 'colorString' and 'name'.
     if (data.constructor === Array) {
       var data = data.map(function (datum) {
@@ -144,23 +152,23 @@
       });
     }
 
-    var markerTrailsJoin = this.$.markerTrails.selectAll('.wheel__marker-trail').data(data);
+    var markerTrails = this.$.markerTrails.selectAll('.wheel__marker-trail').data(data);
 
-    markerTrailsJoin.enter().append('line').attr({
+    markerTrails.enter().append('line').attr({
       'class': 'wheel__marker-trail',
-      'x1': this.r,
-      'y1': this.r,
+      'x1': this.options.radius,
+      'y1': this.options.radius,
       'stroke': 'white',
       'stroke-opacity': 0.75,
       'stroke-width': 3,
       'stroke-dasharray': '10, 6'
     });
 
-    markerTrailsJoin.exit().remove();
+    markerTrails.exit().remove();
 
-    var markersJoin = this.$.markers.selectAll('.wheel__marker').data(data);
+    var markers = this.$.markers.selectAll('.wheel__marker').data(data);
 
-    markersJoin.enter()
+    markers.enter()
       .append('g').attr('class', 'wheel__marker')
       .append('circle')
       .attr({
@@ -171,16 +179,16 @@
         'cursor': 'move'
       });
 
-    markersJoin.exit().remove();
+    markers.exit().remove();
 
-    markersJoin.append('text').text(function (d) { return d.name; }).attr({
+    markers.append('text').text(function (d) { return d.name; }).attr({
         x: (this.options.markerWidth / 2) + 8,
         y: (this.options.markerWidth / 4) - 5,
         fill: 'white',
         'font-size': '13px',
       });
 
-    markersJoin.call(this.getDragBehavior());
+    markers.call(this.getDragBehavior());
 
     this.dispatch.bindData(data);
     this.dispatch.update();
@@ -190,15 +198,16 @@
     var self = this;
     return d3.behavior.drag()
       .on('drag', function (d) {
-        var pos = self.pointOnCircle(d3.event.x, d3.event.y);
-        var hs = self.getHSFromSVGPosition(pos.x, pos.y);
+        var pos, hs, p, dragHue, startingHue, theta1, theta2;
+        pos = self.pointOnCircle(d3.event.x, d3.event.y);
+        hs = self.getHSFromSVGPosition(pos.x, pos.y);
         d.h = hs.h;
         d.s = hs.s;
-        var p = self.svgToCartesian(d3.event.x, d3.event.y);
-        var dragHue = ((Math.atan2(p.y, p.x) * 180 / Math.PI) + 720) % 360;
-        var startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
-        var theta1 = (360 + startingHue - dragHue) % 360;
-        var theta2 = (360 + dragHue - startingHue) % 360;
+        p = self.svgToCartesian(d3.event.x, d3.event.y);
+        dragHue = ((Math.atan2(p.y, p.x) * 180 / Math.PI) + 720) % 360;
+        startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
+        theta1 = (360 + startingHue - dragHue) % 360;
+        theta2 = (360 + dragHue - startingHue) % 360;
         self.updateHarmony(this, theta1 < theta2 ? -1 * theta1 : theta2);
         self.dispatch.update();
       })
@@ -315,22 +324,22 @@
   };
 
   ColorWheel.prototype.svgToCartesian = function (x, y) {
-    return {'x': x - this.r, 'y': this.r - y};
+    return {'x': x - this.options.radius, 'y': this.options.radius - y};
   };
 
   ColorWheel.prototype.cartesianToSVG = function (x, y) {
-    return {'x': x + this.r, 'y': this.r - y};
+    return {'x': x + this.options.radius, 'y': this.options.radius - y};
   };
 
   // Given an SVG point (x, y), returns the closest point to (x, y) still in the circle.
   ColorWheel.prototype.pointOnCircle = function (x, y) {
     var p = this.svgToCartesian(x, y);
-    if (Math.sqrt(p.x * p.x + p.y * p.y) <= this.r) {
+    if (Math.sqrt(p.x * p.x + p.y * p.y) <= this.options.radius) {
       return {'x': x, 'y': y};
     } else {
       var theta = Math.atan2(p.y, p.x);
-      var x_ = this.r * Math.cos(theta);
-      var y_ = this.r * Math.sin(theta);
+      var x_ = this.options.radius * Math.cos(theta);
+      var y_ = this.options.radius * Math.sin(theta);
       return this.cartesianToSVG(x_, y_);
     }
   };
@@ -339,8 +348,8 @@
   ColorWheel.prototype.getSVGPositionFromHS = function (h, s) {
     var hue = ColorWheel.scientificToArtisticSmooth(h);
     var theta = hue * (Math.PI / 180);
-    var y = Math.sin(theta) * this.r * s;
-    var x = Math.cos(theta) * this.r * s;
+    var y = Math.sin(theta) * this.options.radius * s;
+    var x = Math.cos(theta) * this.options.radius * s;
     return this.cartesianToSVG(x, y);
   };
 
@@ -350,7 +359,7 @@
     var theta = Math.atan2(p.y, p.x);
     var artisticHue = (theta * (180 / Math.PI) + 360) % 360;
     var scientificHue = ColorWheel.artisticToScientificSmooth(artisticHue);
-    var s = Math.min(Math.sqrt(p.x*p.x + p.y*p.y) / this.r, 1);
+    var s = Math.min(Math.sqrt(p.x*p.x + p.y*p.y) / this.options.radius, 1);
     return {h: scientificHue, s: s};
   };
 
