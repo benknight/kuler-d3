@@ -7,7 +7,7 @@ ColorWheel.extend('bgGradient', function (colorWheel) {
       'class': 'gradient'
     });
   }
-  colorWheel.dispatch.on('updateEnd.bg', function () {
+  colorWheel.dispatch.on('updateEnd.gradient', function () {
     var gradientStops = colorWheel.getColorsAsHEX();
     gradientStops[0] += ' 10%';
     gradientStops[gradientStops.length - 1] += ' 90%';

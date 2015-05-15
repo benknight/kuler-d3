@@ -4,7 +4,7 @@ ColorWheel.extend('modeToggle', function (colorWheel) {
     .attr('class', 'mode-toggle')
     .on('change', function () {
       colorWheel.currentMode = this.value;
-      colorWheel.init();
+      colorWheel.setHarmony();
     });
 
   for (var mode in ColorWheel.modes) {

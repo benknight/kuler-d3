@@ -1,30 +1,28 @@
 // Add theme UI
-ColorWheel.extend('theme', function (colorWheel, data) {
+ColorWheel.extend('theme', function (colorWheel) {
   var theme = colorWheel.container.append('div').attr('class', 'theme');
-  var swatches = theme.selectAll('div').data(data);
 
-  swatches.enter().append('div')
-    .attr('class', 'theme__swatch')
-    .append('div').attr('class', 'theme__color');
+  colorWheel.dispatch.on('bindData.theme', function (data) {
+    var swatches = theme.selectAll('.theme__swatch').data(data);
+    var newSwatches = swatches.enter().append('div').attr('class', 'theme__swatch');
 
-  swatches.exit().remove();
+    // Add color
+    newSwatches.append('div').attr('class', 'theme__color');
 
-  // Add sliders
-  var sliders = theme.selectAll('.theme__swatch')
-    .append('input')
-    .attr('type', 'range')
-    .attr('class', 'theme__slider')
-    .on('input', function (d) {
-      d.v = parseInt(this.value) / 100;
-      colorWheel.dispatch.update();
-    })
-    .on('change', function () {
-      colorWheel.dispatch.updateEnd();
-    });
+    // Add sliders
+    newSwatches.append('input')
+      .attr('type', 'range')
+      .attr('class', 'theme__slider')
+      .on('input', function (d) {
+        d.v = parseInt(this.value) / 100;
+        colorWheel.dispatch.update();
+      })
+      .on('change', function () {
+        colorWheel.dispatch.updateEnd();
+      });
 
-  // Add color codes
-  var colorValues = theme.selectAll('.theme__swatch')
-    .append('input')
+    // Add color codes
+    newSwatches.append('input')
       .attr('type', 'text')
       .attr('class', 'theme__value')
       .on('focus', function () {
@@ -37,6 +35,9 @@ ColorWheel.extend('theme', function (colorWheel, data) {
         })
         this.select();
       });
+
+    swatches.exit().remove();
+  });
 
   colorWheel.dispatch.on('update.theme', function () {
     colorWheel.container.selectAll('.theme__swatch').each(function (d, i) {
@@ -63,7 +64,7 @@ ColorWheel.extend('theme', function (colorWheel, data) {
 
     colorWheel.container.selectAll('.theme__value').each(function (d) {
       var c = tinycolor({h: d.h, s: d.s, v: d.v});
-      this.value = colorWheel.options.colorString(c);
+      this.value = c.toHexString();
     });
   });
 });
