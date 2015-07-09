@@ -2,6 +2,8 @@
 
 > Reconstruction of the color wheel UI found on http://color.adobe.com (formerly known as Kuler) using [D3.js](https://github.com/mbostock/d3).
 
+**Note**: The `master` branch is in a WIP state.  If you wish to use this code, please use the version on the `gh-pages` branch for maximum profit. ;)
+
 ## Demo
 
 http://benknight.github.io/kuler-d3/
