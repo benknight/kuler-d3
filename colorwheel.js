@@ -14,9 +14,14 @@
 }(this, function (tinycolor, d3) {
   'use strict';
 
+  var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
+    this.color = tinycolor(color).toHsv();
+    this.name = name;
+    this.show = show;
+  };
+
   var ColorWheel = function ColorWheel (options) {
     var self = this;
-
 
     // --- Settings ---
 
@@ -25,7 +30,7 @@
       radius: 175,
       margin: 40, // space around the edge of the wheel
       markerWidth: 40,
-      defaultSlice: 15,
+      defaultSlice: 20,
       initRoot: 'red',
       initMode: ColorWheel.modes.ANALOGOUS
     };
@@ -81,38 +86,49 @@
 
     // --- Events ---
 
-    this.dispatch = d3.dispatch('update', 'updateEnd', 'bindData');
+    this.dispatch = d3.dispatch(
+      'updateMarkers',
+      'updateEnd',
+      'bindData',
+      'setMode'
+    );
 
     this.dispatch.on('bindData.default', function () {
       self.setHarmony();
     });
 
-    this.dispatch.on('update.default', function () {
-      self.container.selectAll('.wheel__marker').attr({
+    this.dispatch.on('updateMarkers.default', function () {
+      self.getMarkers().attr({
         transform: function (d) {
-          var hue = ColorWheel.scientificToArtisticSmooth(d.h);
-          var p = self.getSVGPositionFromHS(d.h, d.s);
+          var hue = ColorWheel.scientificToArtisticSmooth(d.color.h);
+          var p = self.getSVGPositionFromHS(d.color.h, d.color.s);
           return ['translate(' + [p.x, p.y].join() + ')'].join(' ');
+        },
+        visibility: function (d) {
+          return d.show ? 'visible' : 'hidden';
         }
       }).select('circle').attr({
         fill: function (d) {
-          return ColorWheel.hexFromHS(d.h, d.s);
+          return ColorWheel.hexFromHS(d.color.h, d.color.s);
         }
       });
 
       self.container.selectAll('.wheel__marker-trail').attr({
         'x2': function (d) {
-          var p = self.getSVGPositionFromHS(d.h, d.s);
+          var p = self.getSVGPositionFromHS(d.color.h, d.color.s);
           return p.x;
         },
         'y2': function (d) {
-          var p = self.getSVGPositionFromHS(d.h, d.s);
+          var p = self.getSVGPositionFromHS(d.color.h, d.color.s);
           return p.y;
+        },
+        visibility: function (d) {
+          return d.show ? 'visible' : 'hidden';
         }
       });
     });
 
-    this.dispatch.on('updateEnd.default', function () {
+    this.dispatch.on('setMode.default', function () {
       self.container.attr('data-mode', self.currentMode);
     });
 
@@ -126,29 +142,19 @@
     }
   };
 
-  ColorWheel.prototype.bindData = function (data) {
+  ColorWheel.prototype.bindData = function (newData) {
     var self = this;
 
-    // Data can be passed as a whole number, array of color strings, or array of
-    // objects with keys 'colorString' and 'name'.
-    if (data.constructor === Array) {
-      var data = data.map(function (datum) {
-        var d;
-        if (typeof datum === 'string') {
-          d = tinycolor(datum).toHsv();
-        } else if (typeof datum === 'object') {
-          d = tinycolor(datum.colorString).toHsv();
-          d.s = 1.0;
-          d.name = datum.name;
-        }
-        return d;
-      });
-      this.currentMode = ColorWheel.modes.CUSTOM;
+    // Data can be passed as a whole number,
+    // or an array of ColorWheelMarkerDatum.
+    if (newData.constructor === Array) {
+      var data = newData;
+      this.setMode(ColorWheel.modes.CUSTOM);
     } else {
       // We weren't given any data so create our own.
-      var numColors = (typeof data === 'number') ? data : 5;
-      data = Array.apply(null, {length: numColors}).map(function () {
-        return tinycolor(self.options.initRoot).toHsv();
+      var numColors = (typeof newData === 'number') ? newData : 5;
+      var data = Array.apply(null, {length: numColors}).map(function () {
+        return new ColorWheelMarkerDatum(self.options.initRoot);
       });
     }
 
@@ -191,7 +197,9 @@
     markers.call(this.getDragBehavior());
 
     this.dispatch.bindData(data);
-    this.dispatch.update();
+    this.dispatch.updateMarkers();
+    this.dispatch.updateEnd();
+
   };
 
   ColorWheel.prototype.getDragBehavior = function () {
@@ -201,107 +209,120 @@
         var pos, hs, p, dragHue, startingHue, theta1, theta2;
         pos = self.pointOnCircle(d3.event.x, d3.event.y);
         hs = self.getHSFromSVGPosition(pos.x, pos.y);
-        d.h = hs.h;
-        d.s = hs.s;
+        d.color.h = hs.h;
+        d.color.s = hs.s;
         p = self.svgToCartesian(d3.event.x, d3.event.y);
         dragHue = ((Math.atan2(p.y, p.x) * 180 / Math.PI) + 720) % 360;
         startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
         theta1 = (360 + startingHue - dragHue) % 360;
         theta2 = (360 + dragHue - startingHue) % 360;
         self.updateHarmony(this, theta1 < theta2 ? -1 * theta1 : theta2);
-        self.dispatch.update();
+        self.dispatch.updateMarkers();
       })
       .on('dragstart', function () {
-        self.container.selectAll('.wheel__marker')
-          .attr('data-startingHue', function (d) {
-            return ColorWheel.scientificToArtisticSmooth(d.h);
-          });
+        self.getVisibleMarkers().attr('data-startingHue', function (d) {
+          return ColorWheel.scientificToArtisticSmooth(d.color.h);
+        });
       })
       .on('dragend', function () {
-        self.container.selectAll('.wheel__marker').attr('data-startingHue', null);
+        self.getVisibleMarkers().attr('data-startingHue', null);
         self.dispatch.updateEnd();
       });
   };
 
+  ColorWheel.prototype.getMarkers = function() {
+    return this.container.selectAll('.wheel__marker');
+  },
+
+  ColorWheel.prototype.getVisibleMarkers = function() {
+    return this.container.selectAll('.wheel__marker[visibility=visible]');
+  },
+
+  ColorWheel.prototype.getRootMarker = function() {
+    return this.container.select('.wheel__marker[visibility=visible]');
+  },
+
   ColorWheel.prototype.setHarmony = function () {
     var self = this;
-    var root = this.container.select('.wheel__marker');
-    var rootHue = ColorWheel.scientificToArtisticSmooth(root.datum().h);
-
-    switch (this.currentMode) {
-      case ColorWheel.modes.ANALOGOUS:
-        this.container.selectAll('.wheel__marker').each(function (d, i) {
-          var newHue = (rootHue + (ColorWheel.markerDistance(i) * self.options.defaultSlice) + 720) % 360;
-          d.h = ColorWheel.artisticToScientificSmooth(newHue);
-          d.s = 1;
-          d.v = 1;
-        });
-        break;
-      case ColorWheel.modes.MONOCHROMATIC:
-      case ColorWheel.modes.SHADES:
-        this.container.selectAll('.wheel__marker').each(function (d, i) {
-          d.h = ColorWheel.artisticToScientificSmooth(rootHue);
-          if (self.currentMode == ColorWheel.modes.SHADES) {
-            d.s = 1;
-            d.v = 0.25 + 0.75 * Math.random();
-          } else {
-            d.s = 1 - (0.15 * i + Math.random() * 0.1);
-            d.v = 0.75 + 0.25 * Math.random();
-          }
-        });
-        break;
-      case ColorWheel.modes.COMPLEMENTARY:
-        this.container.selectAll('.wheel__marker').each(function (d, i) {
-          var newHue = (rootHue + ((i % 2) * 180) + 720) % 360;
-          d.h = ColorWheel.artisticToScientificSmooth(newHue);
-          d.s = 1 - 0.2 * ColorWheel.stepFn(2)(i);
-          d.v = 1;
-        });
-        break;
-      case ColorWheel.modes.TRIAD:
-        this.container.selectAll('.wheel__marker').each(function (d, i) {
-          var newHue = (rootHue + ((i % 3) * 120) + 720) % 360;
-          d.h = ColorWheel.artisticToScientificSmooth(newHue);
-          d.s = 1 - 0.3 * ColorWheel.stepFn(3)(i);
-          d.v = 1;
-        });
-        break;
-      case ColorWheel.modes.TETRAD:
-        this.container.selectAll('.wheel__marker').each(function (d, i) {
-          var newHue = (rootHue + ((i % 4) * 90) + 720) % 360;
-          d.h = ColorWheel.artisticToScientificSmooth(newHue);
-          d.s = 1 - 0.4 * ColorWheel.stepFn(4)(i);
-          d.v = 1;
-        });
-        break;
+    var root = this.getRootMarker();
+    var offsetFactor = 0.08;
+    if (! root.empty()) {
+      var rootHue = ColorWheel.scientificToArtisticSmooth(root.datum().color.h);
+      switch (this.currentMode) {
+        case ColorWheel.modes.ANALOGOUS:
+          this.getVisibleMarkers().each(function (d, i) {
+            var newHue = (rootHue + (ColorWheel.markerDistance(i) * self.options.defaultSlice) + 720) % 360;
+            d.color.h = ColorWheel.artisticToScientificSmooth(newHue);
+            d.color.s = 1;
+            d.color.v = 1;
+          });
+          break;
+        case ColorWheel.modes.MONOCHROMATIC:
+        case ColorWheel.modes.SHADES:
+          this.getVisibleMarkers().each(function (d, i) {
+            d.color.h = ColorWheel.artisticToScientificSmooth(rootHue);
+            if (self.currentMode == ColorWheel.modes.SHADES) {
+              d.color.s = 1;
+              d.color.v = 0.25 + 0.75 * Math.random();
+            } else {
+              d.color.s = 1 - (0.15 * i + Math.random() * 0.1);
+              d.color.v = 0.75 + 0.25 * Math.random();
+            }
+          });
+          break;
+        case ColorWheel.modes.COMPLEMENTARY:
+          this.getVisibleMarkers().each(function (d, i) {
+            var newHue = (rootHue + ((i % 2) * 180) + 720) % 360;
+            d.color.h = ColorWheel.artisticToScientificSmooth(newHue);
+            d.color.s = 1 - offsetFactor * ColorWheel.stepFn(2)(i);
+            d.color.v = 1;
+          });
+          break;
+        case ColorWheel.modes.TRIAD:
+          this.getVisibleMarkers().each(function (d, i) {
+            var newHue = (rootHue + ((i % 3) * 120) + 720) % 360;
+            d.color.h = ColorWheel.artisticToScientificSmooth(newHue);
+            d.color.s = 1 - offsetFactor * ColorWheel.stepFn(3)(i);
+            d.color.v = 1;
+          });
+          break;
+        case ColorWheel.modes.TETRAD:
+          this.getVisibleMarkers().each(function (d, i) {
+            var newHue = (rootHue + ((i % 4) * 90) + 720) % 360;
+            d.color.h = ColorWheel.artisticToScientificSmooth(newHue);
+            d.color.s = 1 - offsetFactor * ColorWheel.stepFn(4)(i);
+            d.color.v = 1;
+          });
+          break;
+      }
     }
-    this.dispatch.update();
-    this.dispatch.updateEnd();
   };
 
   ColorWheel.prototype.updateHarmony = function (target, theta) {
     var self = this;
-    var root = this.container.select('.wheel__marker');
-    var rootHue = ColorWheel.scientificToArtisticSmooth(root.datum().h);
+    var root = this.getRootMarker();
+    var rootHue = ColorWheel.scientificToArtisticSmooth(root.datum().color.h);
 
     // Find out how far the dragging marker is from the root marker.
     var cursor = target;
     var counter = 0;
     while (cursor = cursor.previousSibling) {
-      counter++;
+      if (cursor.getAttribute('visibility') !== 'hidden') {
+        counter++;
+      }
     }
     var targetDistance = ColorWheel.markerDistance(counter);
 
     switch (this.currentMode) {
       case ColorWheel.modes.ANALOGOUS:
-        this.container.selectAll('.wheel__marker').each(function (d, i) {
+        this.getVisibleMarkers().each(function (d, i) {
           var startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
           var slices = 1;
           if (targetDistance !== 0) {
             slices = ColorWheel.markerDistance(i) / targetDistance;
           }
           if (this !== target) {
-            d.h = ColorWheel.artisticToScientificSmooth(
+            d.color.h = ColorWheel.artisticToScientificSmooth(
               (startingHue + (slices * theta) + 720) % 360
             );
           }
@@ -312,11 +333,11 @@
       case ColorWheel.modes.SHADES:
       case ColorWheel.modes.TRIAD:
       case ColorWheel.modes.TETRAD:
-        this.container.selectAll('.wheel__marker').each(function (d) {
+        this.getVisibleMarkers().each(function (d) {
           var startingHue = parseFloat(d3.select(this).attr('data-startingHue'));
-          d.h = ColorWheel.artisticToScientificSmooth((startingHue + theta + 720) % 360);
+          d.color.h = ColorWheel.artisticToScientificSmooth((startingHue + theta + 720) % 360);
           if (self.currentMode == ColorWheel.modes.SHADES) {
-            d.s = 1;
+            d.color.s = 1;
           }
         });
         break;
@@ -364,12 +385,12 @@
   };
 
   ColorWheel.prototype._getColorsAs = function (toFunk) {
-    return this.container.selectAll('.wheel__marker').data()
+    return this.getVisibleMarkers().data()
       .sort(function (a, b) {
-        return a.h - b.h;
+        return a.color.h - b.color.h;
       })
       .map(function (d) {
-        return tinycolor({h: d.h, s: d.s, v: d.v})[toFunk]();
+        return tinycolor({h: d.color.h, s: d.color.s, v: d.color.v})[toFunk]();
       });
   };
 
@@ -392,8 +413,12 @@
   ColorWheel.prototype.setMode = function (mode) {
     ColorWheel.checkIfModeExists(mode);
     this.currentMode = mode;
-    this.container.select('select').property('value', mode);
-    this.setHarmony();
+    if (mode !== ColorWheel.modes.CUSTOM) {
+      this.setHarmony();
+      this.dispatch.updateMarkers();
+      this.dispatch.updateEnd();
+    }
+    this.dispatch.setMode();
   };
 
   // These modes define a relationship between the colors on a color wheel,
@@ -412,7 +437,7 @@
   // For example, mapRange(5, 0, 10, 0, 100) = 50
   ColorWheel.mapRange =  function (value, fromLower, fromUpper, toLower, toUpper) {
     return (toLower + (value - fromLower) * ((toUpper - toLower) / (fromUpper - fromLower)));
-  }
+  };
 
   // These two functions are ripped straight from Kuler source.
   // They convert between scientific hue to the color wheel's "artistic" hue.
@@ -425,7 +450,7 @@
       hue < 275 ? this.mapRange(hue, 218, 275, 180, 240):
       hue < 330 ? this.mapRange(hue, 275, 330, 240, 300):
                   this.mapRange(hue, 330, 360, 300, 360));
-  }
+  };
 
   ColorWheel.scientificToArtisticSmooth = function (hue) {
     return (
@@ -436,12 +461,12 @@
       hue < 240 ? this.mapRange(hue, 180, 240, 218, 275):
       hue < 300 ? this.mapRange(hue, 240, 300, 275, 330):
                   this.mapRange(hue, 300, 360, 330, 360));
-  }
+  };
 
   // Get a hex string from hue and sat components, with 100% brightness.
   ColorWheel.hexFromHS = function (h, s) {
     return tinycolor({h: h, s: s, v: 1}).toHexString();
-  }
+  };
 
   // Used to determine the distance from the root marker.
   // (The first DOM node with marker class)
@@ -449,7 +474,7 @@
   // Range:  [0, 1, -1, 2, -2, ... ]
   ColorWheel.markerDistance = function (i) {
     return Math.ceil(i / 2) * Math.pow(-1, i + 1);
-  }
+  };
 
   // Returns a step function with the given base.
   // e.g. with base = 3, returns a function with this domain/range:
@@ -457,13 +482,13 @@
   // Range:  [0, 0, 0, 1, 1, 1, ...]
   ColorWheel.stepFn = function (base) {
     return function(x) { return Math.floor(x / base); }
-  }
+  };
 
   // Throw an error if someone gives us a bad mode.
   ColorWheel.checkIfModeExists = function (mode) {
     var modeExists = false;
-    for (var possibleMode in modes) {
-      if (modes[possibleMode] == mode) {
+    for (var possibleMode in ColorWheel.modes) {
+      if (ColorWheel.modes[possibleMode] == mode) {
         modeExists = true;
         break;
       }
@@ -472,14 +497,19 @@
       throw Error('Invalid mode specified: ' + mode);
     }
     return true;
-  }
+  };
+
+  // For creating custom markers
+  ColorWheel.createMarker = function (color, name, show) {
+    return new ColorWheelMarkerDatum(color, name, show);
+  };
 
   // Provide a plugin interface
   ColorWheel.plugins = {};
 
   ColorWheel.extend = function (pluginId, pluginFn) {
     this.plugins[pluginId] = pluginFn;
-  }
+  };
 
   return ColorWheel;
 }));
