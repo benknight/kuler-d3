@@ -11,7 +11,8 @@ http://benknight.github.io/kuler-d3/
 By specifying a number of colors:
 
 ```javascript
-var colorWheel = new ColorWheel(5, '.colorwheel');
+var colorWheel = new ColorWheel('.colorwheel');
+colorWheel.bindData(5);
 ```
     
 or, with preexisting color values:
@@ -28,5 +29,6 @@ var data = [
   'hsl(0, 100%, 50%)'
 ];
 
-var colorWheel = new ColorWheel(data, '.colorwheel');
+var colorWheel = new ColorWheel('.colorwheel');
+colorWheel.bindData(data);
 ```
