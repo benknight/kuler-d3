@@ -49,6 +49,8 @@
     this.currentMode = this.options.initMode;
     this.container = d3.select(this.options.container);
 
+    this.slice = this.options.defaultSlice;
+
 
     // --- Nodes ---
 
@@ -225,7 +227,12 @@
         });
       })
       .on('dragend', function () {
-        self.getVisibleMarkers().attr('data-startingHue', null);
+        var visibleMarkers = self.getVisibleMarkers();
+        var rootTheta      = ColorWheel.scientificToArtisticSmooth(d3.select(visibleMarkers[0][0]).datum().color.h);
+        var neighborTheta  = ColorWheel.scientificToArtisticSmooth(d3.select(visibleMarkers[0][1]).datum().color.h);
+        self.slice = (360 + neighborTheta - rootTheta) % 360;
+        console.log(rootTheta, neighborTheta, self.slice);
+        visibleMarkers.attr('data-startingHue', null);
         self.dispatch.updateEnd();
       });
   };
@@ -251,7 +258,7 @@
       switch (this.currentMode) {
         case ColorWheel.modes.ANALOGOUS:
           this.getVisibleMarkers().each(function (d, i) {
-            var newHue = (rootHue + (ColorWheel.markerDistance(i) * self.options.defaultSlice) + 720) % 360;
+            var newHue = (rootHue + (ColorWheel.markerDistance(i) * self.slice) + 720) % 360;
             d.color.h = ColorWheel.artisticToScientificSmooth(newHue);
             d.color.s = 1;
             d.color.v = 1;
