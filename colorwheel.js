@@ -295,6 +295,7 @@
           });
           break;
       }
+      this.dispatch.updateMarkers();
     }
   };
 
