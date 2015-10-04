@@ -2,6 +2,8 @@
 
 > Reconstruction of the color wheel UI found on http://color.adobe.com (formerly known as Kuler) using [D3.js](https://github.com/mbostock/d3).
 
+**Note**: The `master` branch is in a WIP state.  If you wish to use this code, please use the version on the `gh-pages` branch for maximum profit. ;)
+
 ## Demo
 
 http://benknight.github.io/kuler-d3/
@@ -11,7 +13,8 @@ http://benknight.github.io/kuler-d3/
 By specifying a number of colors:
 
 ```javascript
-var colorWheel = new ColorWheel(5, '.colorwheel');
+var colorWheel = new ColorWheel('.colorwheel');
+colorWheel.bindData(5);
 ```
     
 or, with preexisting color values:
@@ -28,5 +31,6 @@ var data = [
   'hsl(0, 100%, 50%)'
 ];
 
-var colorWheel = new ColorWheel(data, '.colorwheel');
+var colorWheel = new ColorWheel('.colorwheel');
+colorWheel.bindData(data);
 ```
