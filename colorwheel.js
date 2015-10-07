@@ -238,15 +238,15 @@
       });
   };
 
-  ColorWheel.prototype.getMarkers = function() {
+  ColorWheel.prototype.getMarkers = function () {
     return this.container.selectAll('.wheel__marker');
   },
 
-  ColorWheel.prototype.getVisibleMarkers = function() {
+  ColorWheel.prototype.getVisibleMarkers = function () {
     return this.container.selectAll('.wheel__marker[visibility=visible]');
   },
 
-  ColorWheel.prototype.getRootMarker = function() {
+  ColorWheel.prototype.getRootMarker = function () {
     return this.container.select('.wheel__marker[visibility=visible]');
   },
 
@@ -435,13 +435,13 @@
   // These modes define a relationship between the colors on a color wheel,
   // based on "science".
   ColorWheel.modes = {
-      ANALOGOUS: 'Analogous',
-      COMPLEMENTARY: 'Complementary',
-      TRIAD: 'Triad',
-      TETRAD: 'Tetrad',
-      MONOCHROMATIC: 'Monochromatic',
-      SHADES: 'Shades',
-      CUSTOM: 'Custom'
+    ANALOGOUS: 'Analogous',
+    COMPLEMENTARY: 'Complementary',
+    TRIAD: 'Triad',
+    TETRAD: 'Tetrad',
+    MONOCHROMATIC: 'Monochromatic',
+    SHADES: 'Shades',
+    CUSTOM: 'Custom'
   };
 
   // Simple range mapping function
@@ -492,7 +492,7 @@
   // Domain: [0, 1, 2, 3, 4, 5, ...]
   // Range:  [0, 0, 0, 1, 1, 1, ...]
   ColorWheel.stepFn = function (base) {
-    return function(x) { return Math.floor(x / base); }
+    return function (x) { return Math.floor(x / base); }
   };
 
   // Throw an error if someone gives us a bad mode.
