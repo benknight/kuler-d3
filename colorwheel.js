@@ -231,8 +231,10 @@
         visibleMarkers.attr('data-startingHue', null);
         if (self.currentMode === ColorWheel.modes.ANALOGOUS) {
           var rootTheta = ColorWheel.scientificToArtisticSmooth(d3.select(visibleMarkers[0][0]).datum().color.h);
-          var neighborTheta = ColorWheel.scientificToArtisticSmooth(d3.select(visibleMarkers[0][1]).datum().color.h);
-          self.slice = (360 + neighborTheta - rootTheta) % 360;
+          if (visibleMarkers[0].length > 1) {
+            var neighborTheta = ColorWheel.scientificToArtisticSmooth(d3.select(visibleMarkers[0][1]).datum().color.h);
+            self.slice = (360 + neighborTheta - rootTheta) % 360;
+          }
         }
         self.dispatch.updateEnd();
       });
