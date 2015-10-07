@@ -1,4 +1,4 @@
-<h1><img src="https://raw.githubusercontent.com/benknight/kuler-d3/master/wheel.png" align="left" width="55" hspace="10">Color Wheel with D3</h1>
+<h1><img src="https://raw.githubusercontent.com/benknight/kuler-d3/master/wheel.png" align="left" width="48" hspace="10">Color Wheel with D3</h1>
 
 > Reconstruction of the color wheel UI found on http://color.adobe.com (formerly known as Kuler) using [D3.js](https://github.com/mbostock/d3).
 
