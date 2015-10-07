@@ -426,11 +426,9 @@
   ColorWheel.prototype.setMode = function (mode) {
     ColorWheel.checkIfModeExists(mode);
     this.currentMode = mode;
-    if (mode !== ColorWheel.modes.CUSTOM) {
-      this.setHarmony();
-      this.dispatch.updateMarkers();
-      this.dispatch.updateEnd();
-    }
+    this.setHarmony();
+    this.dispatch.updateMarkers();
+    this.dispatch.updateEnd();
     this.dispatch.setMode();
   };
 
