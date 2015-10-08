@@ -89,17 +89,24 @@
     // --- Events ---
 
     this.dispatch = d3.dispatch(
-      'updateMarkers',
+      // Markers datum has changed, so redraw as necessary, etc.
+      'markersUpdated',
+
+      // "updateEnd" means the state of the ColorWheel has been finished updating.
       'updateEnd',
+
+      // Initial data was successfully bound.
       'bindData',
-      'setMode'
+
+      // The mode was changed
+      'modeChanged'
     );
 
     this.dispatch.on('bindData.default', function () {
       self.setHarmony();
     });
 
-    this.dispatch.on('updateMarkers.default', function () {
+    this.dispatch.on('markersUpdated.default', function () {
       self.getMarkers().attr({
         transform: function (d) {
           var hue = ColorWheel.scientificToArtisticSmooth(d.color.h);
@@ -130,7 +137,7 @@
       });
     });
 
-    this.dispatch.on('setMode.default', function () {
+    this.dispatch.on('modeChanged.default', function () {
       self.container.attr('data-mode', self.currentMode);
     });
 
@@ -199,9 +206,8 @@
     markers.call(this.getDragBehavior());
 
     this.dispatch.bindData(data);
-    this.dispatch.updateMarkers();
+    this.dispatch.markersUpdated();
     this.dispatch.updateEnd();
-
   };
 
   ColorWheel.prototype.getDragBehavior = function () {
@@ -219,7 +225,6 @@
         theta1 = (360 + startingHue - dragHue) % 360;
         theta2 = (360 + dragHue - startingHue) % 360;
         self.updateHarmony(this, theta1 < theta2 ? -1 * theta1 : theta2);
-        self.dispatch.updateMarkers();
       })
       .on('dragstart', function () {
         self.getVisibleMarkers().attr('data-startingHue', function (d) {
@@ -307,7 +312,7 @@
           });
           break;
       }
-      this.dispatch.updateMarkers();
+      this.dispatch.markersUpdated();
     }
   };
 
@@ -355,6 +360,7 @@
         });
         break;
     }
+    self.dispatch.markersUpdated();
   };
 
   ColorWheel.prototype.svgToCartesian = function (x, y) {
@@ -427,21 +433,20 @@
     ColorWheel.checkIfModeExists(mode);
     this.currentMode = mode;
     this.setHarmony();
-    this.dispatch.updateMarkers();
     this.dispatch.updateEnd();
-    this.dispatch.setMode();
+    this.dispatch.modeChanged();
   };
 
   // These modes define a relationship between the colors on a color wheel,
   // based on "science".
   ColorWheel.modes = {
+    CUSTOM: 'Custom',
     ANALOGOUS: 'Analogous',
     COMPLEMENTARY: 'Complementary',
     TRIAD: 'Triad',
     TETRAD: 'Tetrad',
     MONOCHROMATIC: 'Monochromatic',
     SHADES: 'Shades',
-    CUSTOM: 'Custom'
   };
 
   // Simple range mapping function
