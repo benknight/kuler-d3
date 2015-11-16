@@ -26,13 +26,14 @@
     // --- Settings ---
 
     this.options = {
-      container: document.body,
-      radius: 175,
-      margin: 40, // space around the edge of the wheel
-      markerWidth: 40,
-      defaultSlice: 20,
-      initRoot: 'red',
-      initMode: ColorWheel.modes.ANALOGOUS
+      container    : document.body,
+      radius       : 175,
+      margin       : 40, // space around the edge of the wheel
+      markerWidth  : 40,
+      defaultSlice : 20,
+      initRoot     : 'red',
+      initMode     : ColorWheel.modes.ANALOGOUS,
+      baseClassName: 'colorwheel',
     };
 
     // Merge default options with options param. (Similar to jQuery.extend)
@@ -57,7 +58,7 @@
     this.$ = {};
 
     this.$.wheel = this.container.append('svg').attr({
-      'class': 'wheel',
+      'class': this.options.baseClassName,
       width: diameter,
       height: diameter,
       viewBox: [
@@ -69,10 +70,10 @@
     });
 
     this.$.wheel.append('circle').attr({
-      fill: 'black',
-      r: this.options.radius,
-      cx: this.options.radius,
-      cy: this.options.radius,
+      fill     : 'black',
+      r        : this.options.radius,
+      cx       : this.options.radius,
+      cy       : this.options.radius,
       transform: 'translate(4, 4)'
     });
 
@@ -122,7 +123,7 @@
         }
       });
 
-      self.container.selectAll('.wheel__marker-trail').attr({
+      self.container.selectAll(self.selector('marker-trail')).attr({
         'x2': function (d) {
           var p = self.getSVGPositionFromHS(d.color.h, d.color.s);
           return p.x;
@@ -167,10 +168,10 @@
       });
     }
 
-    var markerTrails = this.$.markerTrails.selectAll('.wheel__marker-trail').data(data);
+    var markerTrails = this.$.markerTrails.selectAll(this.selector('marker-trail')).data(data);
 
     markerTrails.enter().append('line').attr({
-      'class': 'wheel__marker-trail',
+      'class': this.cx('marker-trail'),
       'x1': this.options.radius,
       'y1': this.options.radius,
       'stroke': 'white',
@@ -181,10 +182,10 @@
 
     markerTrails.exit().remove();
 
-    var markers = this.$.markers.selectAll('.wheel__marker').data(data);
+    var markers = this.$.markers.selectAll(this.selector('marker')).data(data);
 
     markers.enter()
-      .append('g').attr('class', 'wheel__marker')
+      .append('g').attr('class', this.cx('marker'))
       .append('circle')
       .attr({
         'r': this.options.markerWidth / 2,
@@ -246,15 +247,15 @@
   };
 
   ColorWheel.prototype.getMarkers = function () {
-    return this.container.selectAll('.wheel__marker');
+    return this.container.selectAll(this.selector('marker'));
   },
 
   ColorWheel.prototype.getVisibleMarkers = function () {
-    return this.container.selectAll('.wheel__marker[visibility=visible]');
+    return this.container.selectAll(this.selector('marker') + '[visibility=visible]');
   },
 
   ColorWheel.prototype.getRootMarker = function () {
-    return this.container.select('.wheel__marker[visibility=visible]');
+    return this.container.select(this.selector('marker') + '[visibility=visible]');
   },
 
   ColorWheel.prototype.setHarmony = function () {
@@ -435,6 +436,15 @@
     this.setHarmony();
     this.dispatch.updateEnd();
     this.dispatch.modeChanged();
+  };
+
+  // Utility for building internal classname strings
+  ColorWheel.prototype.cx = function (className) {
+    return this.options.baseClassName + '-' + className;
+  };
+
+  ColorWheel.prototype.selector = function (className) {
+    return '.' + this.cx(className);
   };
 
   // These modes define a relationship between the colors on a color wheel,

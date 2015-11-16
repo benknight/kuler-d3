@@ -1,18 +1,18 @@
 // Add theme UI
 ColorWheel.extend('theme', function (colorWheel) {
-  var theme = colorWheel.container.append('div').attr('class', 'theme');
+  var theme = colorWheel.container.append('div').attr('class', colorWheel.cx('theme'));
 
   colorWheel.dispatch.on('bindData.theme', function (data) {
-    var swatches = theme.selectAll('.theme__swatch').data(data);
-    var newSwatches = swatches.enter().append('div').attr('class', 'theme__swatch');
+    var swatches = theme.selectAll(colorWheel.selector('theme-swatch').data(data);
+    var newSwatches = swatches.enter().append('div').attr('class', colorWheel.cx('theme-swatch'));
 
     // Add color
-    newSwatches.append('div').attr('class', 'theme__color');
+    newSwatches.append('div').attr('class', colorWheel.cx('theme-color'));
 
     // Add sliders
     newSwatches.append('input')
       .attr('type', 'range')
-      .attr('class', 'theme__slider')
+      .attr('class', colorWheel.cx('theme-slider'))
       .on('input', function (d) {
         d.v = parseInt(this.value) / 100;
         colorWheel.dispatch.update();
@@ -24,7 +24,7 @@ ColorWheel.extend('theme', function (colorWheel) {
     // Add color codes
     newSwatches.append('input')
       .attr('type', 'text')
-      .attr('class', 'theme__value')
+      .attr('class', colorWheel.cx('theme-value'))
       .on('focus', function () {
         // Like jQuery's .one(), attach a listener that only executes once.
         // This way the user can use the cursor normally after the initial selection.
@@ -39,8 +39,8 @@ ColorWheel.extend('theme', function (colorWheel) {
     swatches.exit().remove();
   });
 
-  colorWheel.dispatch.on('update.theme', function () {
-    colorWheel.container.selectAll('.theme__swatch').each(function (d, i) {
+  colorWheel.dispatch.on('bindData.theme', function () {
+    colorWheel.container.selectAll(colorWheel.selector('theme-swatch')).each(function (d, i) {
       switch (colorWheel.currentMode) {
         case ColorWheel.modes.TRIAD:
           this.style.order = this.style.webkitOrder = i % 3;
@@ -51,18 +51,18 @@ ColorWheel.extend('theme', function (colorWheel) {
       }
     });
 
-    colorWheel.container.selectAll('.theme__color').each(function (d) {
+    colorWheel.container.selectAll(colorWheel.selector('theme-color')).each(function (d) {
       var c = tinycolor({h: d.h, s: d.s, v: d.v});
       this.style.backgroundColor = c.toHexString();
     });
 
-    colorWheel.container.selectAll('.theme__slider').each(function (d) {
+    colorWheel.container.selectAll(colorWheel.selector('theme-slider')).each(function (d) {
       var val = parseInt(d.v * 100);
       this.value = val;
       d3.select(this).attr('value', val);
     });
 
-    colorWheel.container.selectAll('.theme__value').each(function (d) {
+    colorWheel.container.selectAll(colorWheel.selector('theme-value')).each(function (d) {
       var c = tinycolor({h: d.h, s: d.s, v: d.v});
       this.value = c.toHexString();
     });

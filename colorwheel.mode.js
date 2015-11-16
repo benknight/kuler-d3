@@ -1,7 +1,7 @@
 // Add mode toggle UI
 ColorWheel.extend('modeToggle', function (colorWheel) {
   var modeToggle = colorWheel.container.append('select')
-    .attr('class', 'mode-toggle')
+    .attr('class', colorWheel.cx('mode-toggle'))
     .on('change', function () {
       colorWheel.currentMode = this.value;
       colorWheel.setHarmony();

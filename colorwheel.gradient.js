@@ -1,10 +1,10 @@
 // Background gradient
 ColorWheel.extend('bgGradient', function (colorWheel) {
-  var gradient = d3.select('#gradient');
+  var gradient = d3.select(colorWheel.selector('gradient'));
   if (! gradient.size()) {
     gradient = colorWheel.container.append('div').attr({
       'id': 'gradient',
-      'class': 'gradient'
+      'class': colorWheel.cx('gradient')
     });
   }
   colorWheel.dispatch.on('updateEnd.gradient', function () {
