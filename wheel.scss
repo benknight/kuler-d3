@@ -5,6 +5,7 @@
 
 html {
   min-height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -15,7 +16,7 @@ body {
 
 /** Components */
 
-.wheel {
+.colorwheel {
   position: relative;
   z-index: 1;
   display: block;
@@ -24,7 +25,7 @@ body {
   margin: 60px auto 0;
 }
 
-.wheel__marker {
+.colorwheel-marker {
   &:first-child circle {
     stroke-opacity: 1;
     stroke-width: 5px;
@@ -41,7 +42,7 @@ body {
   }
 }
 
-.theme {
+.colorwheel-theme {
   display: flex;
   text-align: center;
   max-width: 450px;
@@ -49,7 +50,7 @@ body {
   margin: 10px auto 0;
 }
 
-.theme__swatch {
+.colorwheel-theme-swatch {
   flex: 1;
   padding: 0 0.6% 20px;
 
@@ -62,14 +63,14 @@ body {
   }
 }
 
-.theme__color {
+.colorwheel-theme-color {
   position: relative;
   border-radius: 50%;
   padding-top: 100%;
   box-shadow: 2px 2px 0 black;
 }
 
-.theme__slider {
+.colorwheel-theme-slider {
   position: relative;
   display: block;
   width: 100%;
@@ -92,7 +93,7 @@ body {
   }
 }
 
-.theme__value {
+.colorwheel-theme-value {
   outline: none;
   width: 100%;
   border: none;
@@ -102,7 +103,7 @@ body {
   color: white;
 }
 
-.mode-toggle {
+.colorwheel-mode-toggle {
   position: absolute;
   z-index: 2;
   top: 20px;
@@ -118,7 +119,7 @@ body {
   }
 }
 
-.gradient {
+.colorwheel-gradient {
   z-index: -1;
   opacity: 0.5;
   -webkit-filter: url(#blur);

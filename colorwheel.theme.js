@@ -2,8 +2,8 @@
 ColorWheel.extend('theme', function (colorWheel) {
   var theme = colorWheel.container.append('div').attr('class', colorWheel.cx('theme'));
 
-  colorWheel.dispatch.on('bindData.theme', function (data) {
-    var swatches = theme.selectAll(colorWheel.selector('theme-swatch').data(data);
+  colorWheel.dispatch.on('bindData.themeBuild', function (data) {
+    var swatches = theme.selectAll(colorWheel.selector('theme-swatch')).data(data);
     var newSwatches = swatches.enter().append('div').attr('class', colorWheel.cx('theme-swatch'));
 
     // Add color
@@ -39,7 +39,7 @@ ColorWheel.extend('theme', function (colorWheel) {
     swatches.exit().remove();
   });
 
-  colorWheel.dispatch.on('bindData.theme', function () {
+  colorWheel.dispatch.on('markersUpdated.theme', function () {
     colorWheel.container.selectAll(colorWheel.selector('theme-swatch')).each(function (d, i) {
       switch (colorWheel.currentMode) {
         case ColorWheel.modes.TRIAD:
@@ -52,18 +52,18 @@ ColorWheel.extend('theme', function (colorWheel) {
     });
 
     colorWheel.container.selectAll(colorWheel.selector('theme-color')).each(function (d) {
-      var c = tinycolor({h: d.h, s: d.s, v: d.v});
+      var c = tinycolor({h: d.color.h, s: d.color.s, v: d.color.v});
       this.style.backgroundColor = c.toHexString();
     });
 
     colorWheel.container.selectAll(colorWheel.selector('theme-slider')).each(function (d) {
-      var val = parseInt(d.v * 100);
+      var val = parseInt(d.color.v * 100);
       this.value = val;
       d3.select(this).attr('value', val);
     });
 
     colorWheel.container.selectAll(colorWheel.selector('theme-value')).each(function (d) {
-      var c = tinycolor({h: d.h, s: d.s, v: d.v});
+      var c = tinycolor({h: d.color.h, s: d.color.s, v: d.color.v});
       this.value = c.toHexString();
     });
   });

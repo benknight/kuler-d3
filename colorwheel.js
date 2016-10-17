@@ -164,7 +164,7 @@
       // We weren't given any data so create our own.
       var numColors = (typeof newData === 'number') ? newData : 5;
       var data = Array.apply(null, {length: numColors}).map(function () {
-        return new ColorWheelMarkerDatum(self.options.initRoot);
+        return new ColorWheelMarkerDatum(self.options.initRoot, null, true);
       });
     }
 
@@ -185,15 +185,19 @@
     var markers = this.$.markers.selectAll(this.selector('marker')).data(data);
 
     markers.enter()
-      .append('g').attr('class', this.cx('marker'))
+      .append('g')
+        .attr({
+          'class': this.cx('marker'),
+          'visibility': 'visible'
+        })
       .append('circle')
-      .attr({
-        'r': this.options.markerWidth / 2,
-        'stroke': 'white',
-        'stroke-width': 2,
-        'stroke-opacity': 0.9,
-        'cursor': 'move'
-      });
+        .attr({
+          'r': this.options.markerWidth / 2,
+          'stroke': 'white',
+          'stroke-width': 2,
+          'stroke-opacity': 0.9,
+          'cursor': 'move'
+        });
 
     markers.exit().remove();
 
