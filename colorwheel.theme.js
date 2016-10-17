@@ -14,8 +14,8 @@ ColorWheel.extend('theme', function (colorWheel) {
       .attr('type', 'range')
       .attr('class', colorWheel.cx('theme-slider'))
       .on('input', function (d) {
-        d.v = parseInt(this.value) / 100;
-        colorWheel.dispatch.update();
+        d.color.v = parseInt(this.value) / 100;
+        colorWheel.dispatch.markersUpdated();
       })
       .on('change', function () {
         colorWheel.dispatch.updateEnd();
