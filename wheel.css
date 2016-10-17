@@ -1,8 +1,7 @@
 /*! Kuler D3 by Benjamin Knight */
 /** Base & Generic */
 html {
-  min-height: 100%;
-  overflow: hidden; }
+  min-height: 100%; }
 
 body {
   background: black;
