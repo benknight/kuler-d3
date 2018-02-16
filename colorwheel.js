@@ -34,6 +34,7 @@
       initRoot     : 'red',
       initMode     : ColorWheel.modes.ANALOGOUS,
       baseClassName: 'colorwheel',
+      image        : 'http://benknight.github.io/kuler-d3/wheel.png'
     };
 
     // Merge default options with options param. (Similar to jQuery.extend)
@@ -80,7 +81,7 @@
     this.$.wheel.append('image').attr({
       width: diameter,
       height: diameter,
-      'xlink:href': 'http://benknight.github.io/kuler-d3/wheel.png'
+      'xlink:href': this.options.image
     });
 
     this.$.markerTrails = this.$.wheel.append('g');
@@ -158,8 +159,25 @@
     // Data can be passed as a whole number,
     // or an array of ColorWheelMarkerDatum.
     if (newData.constructor === Array) {
-      var data = newData;
+
+      var data = [];
+      for (var i = 0; i < newData.length; i++) 
+      {
+         var item  = newData[i];
+         var color = item; 
+         var name  = null; 
+         if (typeof item === 'object')
+         {
+          if (typeof item.color !== 'undefined')
+            color = item.color;
+
+          if (typeof item.name !== 'undefined')
+            name = item.name;
+         }
+         data.push(new ColorWheelMarkerDatum(color, name, true));
+      };
       this.setMode(ColorWheel.modes.CUSTOM);
+
     } else {
       // We weren't given any data so create our own.
       var numColors = (typeof newData === 'number') ? newData : 5;
